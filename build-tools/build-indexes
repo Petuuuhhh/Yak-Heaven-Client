@@ -13,7 +13,7 @@ const debug = true;
 
 process.stdout.write("Syncing data from Git repository... ");
 if (!fs.existsSync('DH2')) child_process.execSync('git clone -b halloween ' + server_repo + ' DH2');
-else child_process.execSync("git pull", {cwd: 'DH2'});
+else child_process.execSync("git pull " + server_repo + ' halloween', {cwd: 'DH2'});
 
 child_process.execSync('npm run build', {cwd: 'DH2'});
 
@@ -40,7 +40,7 @@ for (const modid in Dex.dexes) {
 			console.log("This was the error:");
 			console.log(err);
 		}
-	}
+4	}
 }
 process.stdout.write("Loading gen 6 data... ");
 Dex.includeData();
@@ -430,6 +430,7 @@ function buildTeambuilderTables() {
 		const zuBans = {};
 		const monotypeBans = {};
 		const nonstandardMoves = [];
+        console.log(gen);
 		for (const id of pokemon) {
 			const species = Dex.mod(gen).species.get(id);
 			const baseSpecies = Dex.mod(gen).species.get(species.baseSpecies);
