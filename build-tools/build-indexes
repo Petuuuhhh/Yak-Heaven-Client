@@ -430,7 +430,6 @@ function buildTeambuilderTables() {
 		const zuBans = {};
 		const monotypeBans = {};
 		const nonstandardMoves = [];
-        console.log(gen);
 		for (const id of pokemon) {
 			const species = Dex.mod(gen).species.get(id);
 			const baseSpecies = Dex.mod(gen).species.get(species.baseSpecies);
