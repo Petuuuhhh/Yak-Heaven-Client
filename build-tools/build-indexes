@@ -13,7 +13,7 @@ const debug = true;
 
 process.stdout.write("Syncing data from Git repository... ");
 if (!fs.existsSync('DH2')) child_process.execSync('git clone -b halloween ' + server_repo + ' DH2');
-else child_process.execSync("git pull " + server_repo + ' halloween', {cwd: 'DH2'});
+else child_process.execSync("git pull", {cwd: 'DH2'});
 
 child_process.execSync('npm run build', {cwd: 'DH2'});
 
