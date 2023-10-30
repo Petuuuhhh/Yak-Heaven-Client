@@ -40,7 +40,7 @@ for (const modid in Dex.dexes) {
 			console.log("This was the error:");
 			console.log(err);
 		}
-4	}
+	}
 }
 process.stdout.write("Loading gen 6 data... ");
 Dex.includeData();
