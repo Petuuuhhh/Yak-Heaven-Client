@@ -180,7 +180,7 @@ const Dex = new class implements ModdedDex {
 	pokeballs: string[] | null = null;
 
 	//TODO we might want to move this to something like data/petmods
-	readonly modResourcePrefix = 'https://raw.githubusercontent.com/Petuuuhhh/Yak-Heaven-Server/halloween/data/mods/';
+	readonly modResourcePrefix = 'https://raw.githubusercontent.com/Petuuuhhh/Yak-Heaven-Server/holiday/data/mods/';
 
 
 	resourcePrefix = (() => {
