@@ -950,7 +950,7 @@ class ModdedDex {
 					data = {...Dex.moves.get(name), ...table.overrideMoveInfo[id]};
 				}
 			}
-			if (this.gen <= 3 && data.category !== 'Status' && this.modid != 'gen2prism') {
+			if (this.gen <= 3 && data.category !== 'Status' && !this.modid.startsWith('gen2prism')) {
 				switch(this.modid) {
 					case 'gen1expansionpack':
 						data.category = Dex.getKEPCategory(data.type);
