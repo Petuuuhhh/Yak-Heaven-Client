@@ -211,9 +211,9 @@ const PSBackground = new class extends PSStreamModel {
 		// curid
 		if (!bgid) {
 			if (location.host === 'smogtours.psim.us') {
-				bgid = 'shaymin';
+				bgid = 'tyranitar';
 			} else if (location.host === Config.routes.client) {
-				const bgs = ['horizon', 'ocean', 'waterfall', 'shaymin', 'charizards'];
+				const bgs = ['prism2', 'prism3', 'tyranitar', 'salamence', 'prism1'];
 				bgid = bgs[Math.floor(Math.random() * 5)];
 				if (bgid === this.curId) bgid = bgs[Math.floor(Math.random() * 5)];
 			}
@@ -221,7 +221,7 @@ const PSBackground = new class extends PSStreamModel {
 		this.curId = bgid;
 
 		if (!bgUrl) {
-			bgUrl = (bgid === 'solidblue' ? '#344b6c' : PSURL + 'fx/client-bg-' + bgid + '.jpg');
+			bgUrl = (bgid === 'solidblue' ? '#344b6c' : Dex.clientPrefix + 'fx/' + bgid + '.png');
 		}
 
 		// April Fool's 2016 - Digimon theme
@@ -318,7 +318,7 @@ const PSBackground = new class extends PSStreamModel {
 				"",
 			];
 		}
-		if (!menuColors && bgUrl.charAt(0) === '#') {
+		if (!menuColors/* && bgUrl.charAt(0) === '#'*/) {
 			const r = parseInt(bgUrl.slice(1, 3), 16) / 255;
 			const g = parseInt(bgUrl.slice(3, 5), 16) / 255;
 			const b = parseInt(bgUrl.slice(5, 7), 16) / 255;

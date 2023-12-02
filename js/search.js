@@ -340,7 +340,7 @@
 		}
 		buf += '</span> ';
 		// abilities
-		if (gen >= 3) {
+		if (gen >= 3 || this.engine.dex.modid === 'gen2prism') {
 			var abilities = pokemon.abilities;
 			if (gen >= 5) {
 				if (abilities['1']) {

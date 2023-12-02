@@ -31,11 +31,12 @@ Storage.bg = {
 	id: '',
 	changeCount: 0,
 	set: function (bgUrl, bgid, noSave) {
-		if (!this.load(bgUrl, bgid)) {
+        if (!this.load(bgUrl, bgid)) {
 			this.extractMenuColors(bgUrl, bgid, noSave);
 		} else if (bgid) {
 			try {
-				localStorage.setItem('showdown_bg', bgUrl + '\n' + bgid);
+				// localStorage.setItem('showdown_bg', bgUrl + '\n' + bgid);
+                this.extractMenuColors(bgUrl, bgid);
 			} catch (e) {}
 		} else {
 			try {
@@ -53,7 +54,7 @@ Storage.bg = {
 			if (location.host === 'smogtours.psim.us') {
 				bgid = 'shaymin';
 			} else if (location.host === Config.routes.client) {
-				bgid = ['horizon', 'ocean', 'waterfall', 'shaymin', 'charizards', 'psday'][Math.floor(Math.random() * 6)];
+				bgid = ['prism2', 'prism3', 'tyranitar', 'salamence', 'prism1', 'psday'][Math.floor(Math.random() * 6)];
 			} else {
 				$(document.body).css({
 					background: '',
@@ -62,7 +63,7 @@ Storage.bg = {
 				$('#mainmenubuttoncolors').remove();
 				return true;
 			}
-			bgUrl = Dex.resourcePrefix + 'fx/client-bg-' + bgid + '.jpg';
+			bgUrl = Dex.clientPrefix + 'fx/' + bgid + '.png';
 		}
 
 		// April Fool's 2016 - Digimon theme
@@ -116,7 +117,7 @@ Storage.bg = {
 		}
 		if (attrib) attrib = '<small style="display:block;padding-bottom:4px">' + attrib + '</small>';
 		$('.bgcredit').html(attrib);
-		if (!hues && bgUrl.charAt(0) === '#') {
+		if (!hues/* && bgUrl.charAt(0) === '#'*/) {
 			var r = parseInt(bgUrl.slice(1, 3), 16) / 255;
 			var g = parseInt(bgUrl.slice(3, 5), 16) / 255;
 			var b = parseInt(bgUrl.slice(5, 7), 16) / 255;
@@ -144,6 +145,7 @@ Storage.bg = {
 		var changeCount = this.changeCount;
 		// We need the image object to load it on a canvas to detect the main color.
 		var img = new Image();
+        img.crossOrigin = 'Anonymous';
 		img.onload = function () {
 			// in case ColorThief throws from canvas,
 			// or localStorage throws
@@ -165,7 +167,7 @@ Storage.bg = {
 				if (!noSave && Storage.bg.changeCount === changeCount) {
 					localStorage.setItem('showdown_bg', bgUrl + '\n' + Storage.bg.id + '\n' + hues.join('\n'));
 				}
-			} catch (e) {}
+			} catch (e) {console.log(e)}
 		};
 		img.src = bgUrl;
 	},

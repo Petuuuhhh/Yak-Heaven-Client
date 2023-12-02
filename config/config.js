@@ -19,7 +19,7 @@ Config.whitelist = [
 // address bar is `Config.routes.client`.
 Config.defaultserver = {
 	id: 'dragonheaven',
-	host: '191.101.232.116',
+	host: '15.204.209.57',
 	port: 8000,
 	httpport: 80,
 	altport: 80,
@@ -36,11 +36,13 @@ Config.customcolors = {
 Config.version = "0.11.2";
 
 Config.routes = {
-	root: '191.101.232.116',
+	root: '15.204.209.57',
 	client: 'localhost',
 	dex: 'dex.pokemonshowdown.com',
 	replays: 'replay.pokemonshowdown.com',
 	users: 'pokemonshowdown.com/users',
 	psmain: 'pokemonshowdown.com',
+	yakserver: 'github.com/Petuuuhhh/Yak-Heaven-Server/blob/yak',
+	yakclient: 'github.com/Petuuuhhh/Yak-Heaven-Client/raw/yak-old',
 };
 /*** End automatically generated configuration ***/

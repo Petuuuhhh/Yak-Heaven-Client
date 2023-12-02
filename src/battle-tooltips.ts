@@ -852,7 +852,7 @@ class BattleTooltips {
 			text += '</p>';
 		}
 
-		const supportsAbilities = this.battle.gen > 2 && !this.battle.tier.includes("Let's Go");
+		const supportsAbilities = (this.battle.gen > 2 && !this.battle.tier.includes("Let's Go")) || this.battle.tier.includes("Prism");
 
 		let abilityText = '';
 		if (supportsAbilities) {

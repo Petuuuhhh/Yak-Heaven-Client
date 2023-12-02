@@ -12,11 +12,8 @@ process.chdir(rootDir);
 const debug = true;
 
 process.stdout.write("Syncing data from Git repository... ");
-if (!fs.existsSync('DH2')) {
-	child_process.execSync('git clone ' + server_repo + ' DH2', {
-	});
-	child_process.execSync("git pull " + server_repo, {cwd: 'DH2'});
-}
+if (!fs.existsSync('DH2')) child_process.execSync('git clone -b yak ' + server_repo + ' DH2');
+else child_process.execSync("git pull " + server_repo + ' yak', {cwd: 'DH2'});
 
 child_process.execSync('npm run build', {cwd: 'DH2'});
 
@@ -1394,12 +1391,10 @@ function buildTeambuilderTables() {
 			for (const tier in tierTable) {
 				for (const formatid in petModFormats) {
 					const banlist = petModFormats[formatid].banlist;
-					if (!!banlist.includes(tier) || !!banlist.includes(toID(tier))) {
-						for (const i in tierTable[tier]) {
-							const speciesid = tierTable[tier][i];
-							if (!petModFormats[formatid].banlist.includes(speciesid)) petModFormats[formatid].bans.push(speciesid);
-						}
-					}
+                    for (const i in tierTable[tier]) {
+                        const speciesid = tierTable[tier][i];
+                        if (petModFormats[formatid].banlist.includes(speciesid)) petModFormats[formatid].bans.push(speciesid);
+                    }
 				}
 			}
 			const tiers = [];

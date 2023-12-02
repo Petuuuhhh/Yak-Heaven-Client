@@ -10,6 +10,8 @@ export class BattleBGM {
 	timer: number | undefined = undefined;
 	loopstart: number;
 	loopend: number;
+    loop?: boolean;
+    prism?: boolean;
 	/**
 	 * When multiple battles with BGM are open, they will be `isPlaying`, but only the
 	 * first one will be `isActuallyPlaying`. In addition, muting volume or setting
@@ -21,10 +23,12 @@ export class BattleBGM {
 	 * The sound should be rewound when it next plays.
 	 */
 	willRewind = true;
-	constructor(url: string, loopstart: number, loopend: number) {
+	constructor(url: string, loopstart: number, loopend: number, loop?: boolean, prism?: boolean) {
 		this.url = url;
 		this.loopstart = loopstart;
 		this.loopend = loopend;
+        this.loop = loop;
+        this.prism = prism;
 	}
 	play() {
 		this.willRewind = true;
@@ -52,7 +56,7 @@ export class BattleBGM {
 		if (this !== BattleSound.currentBgm()) return;
 		if (this.isActuallyPlaying) return;
 
-		if (!this.sound) this.sound = BattleSound.getSound(this.url);
+		if (!this.sound) this.sound = BattleSound.getSound(this.url, this.loop, this.prism);
 		if (!this.sound) return;
 		if (this.willRewind) this.sound.currentTime = 0;
 		this.willRewind = false;
@@ -110,12 +114,14 @@ export const BattleSound = new class {
 	bgmVolume = 50;
 	muted = false;
 
-	getSound(url: string) {
+	getSound(url: string, loop?: boolean, prism?: boolean) {
 		if (!window.HTMLAudioElement) return;
 		if (this.soundCache[url]) return this.soundCache[url];
 		try {
-			const sound = document.createElement('audio');
-			sound.src = 'https://' + Config.routes.psmain + '/' + url;
+			var sound = document.createElement('audio');
+            if (loop) sound.loop = true;
+            if (prism) sound.src = 'https://' + Config.routes.yakclient + '/' + url;
+			else sound.src = 'https://' + Config.routes.psmain + '/' + url;
 			sound.volume = this.effectVolume / 100;
 			this.soundCache[url] = sound;
 			return sound;
@@ -136,13 +142,13 @@ export const BattleSound = new class {
 	}
 
 	/** loopstart and loopend are in milliseconds */
-	loadBgm(url: string, loopstart: number, loopend: number, replaceBGM?: BattleBGM | null) {
+	loadBgm(url: string, loopstart: number, loopend: number, replaceBGM?: BattleBGM | null, loop?: boolean, prism?: boolean) {
 		if (replaceBGM) {
 			replaceBGM.stop();
 			this.deleteBgm(replaceBGM);
 		}
 
-		const bgm = new BattleBGM(url, loopstart, loopend);
+		const bgm = new BattleBGM(url, loopstart, loopend, loop, prism);
 		this.bgm.push(bgm);
 		return bgm;
 	}

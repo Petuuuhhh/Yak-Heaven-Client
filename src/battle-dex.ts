@@ -180,7 +180,8 @@ const Dex = new class implements ModdedDex {
 	pokeballs: string[] | null = null;
 
 	//TODO we might want to move this to something like data/petmods
-	readonly modResourcePrefix = 'https://raw.githubusercontent.com/scoopapa/dh2/master/data/mods/';
+	readonly modResourcePrefix = 'https://raw.githubusercontent.com/Petuuuhhh/Yak-Heaven-Server/yak/data/mods/';
+    readonly clientPrefix = 'https://raw.githubusercontent.com/Petuuuhhh/Yak-Heaven-Client/yak/';
 
 
 	resourcePrefix = (() => {
@@ -218,7 +219,10 @@ const Dex = new class implements ModdedDex {
 		if (avatar.charAt(0) === '#') {
 			return Dex.resourcePrefix + 'sprites/trainers-custom/' + toID(avatar.substr(1)) + '.png';
 		}
-		if (avatar.includes('.') && window.Config?.server?.registered) {
+        if (avatar.includes('.') || avatar.endsWith('-prism')) {
+            return `https://${Config.routes.yakserver}/config/avatars/${avatar}.png?raw=true`;
+        }
+		if (avatar.includes('.')) {
 			// custom avatar served by the server
 			let protocol = (Config.server.port === 443) ? 'https' : 'http';
 			return protocol + '://' + Config.server.host + ':' + Config.server.port +
@@ -694,8 +698,11 @@ const Dex = new class implements ModdedDex {
 			if (spriteData.gen >= 4 && miscData['frontf'] && options.gender === 'F') {
 				name += '-f';
 			}
-
-			spriteData.url += dir + '/' + name + '.png';
+            console.log(options);
+			if (!options.mod.startsWith('gen2prism')) spriteData.url += dir + '/' + name + '.png';
+            else {
+                spriteData.url += isFront ? dir + '/' + name + '.gif' : dir + '/' + name + '.png';
+            }
 		}
 
 		if (!options.noScale) {
@@ -851,6 +858,8 @@ const Dex = new class implements ModdedDex {
 		const shiny = (data.shiny ? '-shiny' : '');
 		let resourcePrefix = Dex.resourcePrefix;
 		if (data.spriteDir.includes('front')) resourcePrefix = Dex.modResourcePrefix;
+        if (mod != 'gen2prism') return 'background-image:url(' + resourcePrefix + data.spriteDir + shiny + '/' + data.spriteid + '.png);background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat';
+        else return 'background-image:url(' + resourcePrefix + data.spriteDir + shiny + '/' + data.spriteid + '.gif);background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat';
 		return 'background-image:url(' + resourcePrefix + data.spriteDir + shiny + '/' + data.spriteid + '.png);background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat';
 	}
 
@@ -940,7 +949,7 @@ class ModdedDex {
 					data = {...Dex.moves.get(name), ...table.overrideMoveInfo[id]};
 				}
 			}
-			if (this.gen <= 3 && data.category !== 'Status') {
+			if (this.gen <= 3 && data.category !== 'Status' && this.modid != 'gen2prism') {
 				switch(this.modid) {
 					case 'gen1expansionpack':
 						data.category = Dex.getKEPCategory(data.type);
@@ -1067,7 +1076,7 @@ class ModdedDex {
 				}
 			}
 			
-			if (this.gen < 3 || this.modid === 'gen7letsgo') {
+			if ((this.gen < 3 || this.modid === 'gen7letsgo') && this.modid !== 'gen2prism') {
 				data.abilities = {0: "None"};
 			}
 			

@@ -717,10 +717,9 @@
 			buf += '<p>Choose an avatar or <button name="close">Cancel</button></p>';
 
 			buf += '<div class="avatarlist">';
-			for (var i = 1; i <= 293; i++) {
-				if (i === 162 || i === 168) continue;
+            for (var i = 1; i <= 334; i++) {
 				var offset = '-' + (((i - 1) % 16) * 80 + 1) + 'px -' + (Math.floor((i - 1) / 16) * 80 + 1) + 'px';
-				buf += '<button name="setAvatar" value="' + i + '" style="background-position:' + offset + '"' + (i === cur ? ' class="cur"' : '') + ' title="/avatar ' + i + '"></button>';
+				buf += '<button name="setAvatar" value="' + i + '" style="background: url(' + Dex.resolveAvatar(window.BattleAvatarNumbers[i]) + ')"' + (i === cur ? ' class="cur"' : '') + ' title="/avatar ' + i + '"></button>';
 			}
 			buf += '</div><div style="clear:left"></div>';
 
@@ -800,11 +799,11 @@
 			buf += '<p><strong>Official</strong></p>';
 			buf += '<div class="bglist">';
 
-			buf += '<button name="setBg" value="charizards"' + (cur === 'charizards' ? ' class="cur"' : '') + '><span class="bg" style="background-position:0 -' + (90 * 0) + 'px"></span>Charizards</button>';
-			buf += '<button name="setBg" value="horizon"' + (cur === 'horizon' ? ' class="cur"' : '') + '><span class="bg" style="background-position:0 -' + (90 * 1) + 'px"></span>Horizon</button>';
-			buf += '<button name="setBg" value="waterfall"' + (cur === 'waterfall' ? ' class="cur"' : '') + '><span class="bg" style="background-position:0 -' + (90 * 2) + 'px"></span>Waterfall</button>';
-			buf += '<button name="setBg" value="ocean"' + (cur === 'ocean' ? ' class="cur"' : '') + '><span class="bg" style="background-position:0 -' + (90 * 3) + 'px"></span>Ocean</button>';
-			buf += '<button name="setBg" value="shaymin"' + (cur === 'shaymin' ? ' class="cur"' : '') + '><span class="bg" style="background-position:0 -' + (90 * 4) + 'px"></span>Shaymin</button>';
+			buf += '<button name="setBg" value="prism1"' + (cur === 'prism1' ? ' class="cur"' : '') + '><span class="bg" style="background-position:0 -' + (90 * 0) + 'px"></span>Prism</button>';
+			buf += '<button name="setBg" value="prism2"' + (cur === 'prism2' ? ' class="cur"' : '') + '><span class="bg" style="background-position:0 -' + (90 * 1) + 'px"></span>Prism</button>';
+			buf += '<button name="setBg" value="prism3"' + (cur === 'prism3' ? ' class="cur"' : '') + '><span class="bg" style="background-position:0 -' + (90 * 2) + 'px"></span>Prism</button>';
+			buf += '<button name="setBg" value="tyranitar"' + (cur === 'tyranitar' ? ' class="cur"' : '') + '><span class="bg" style="background-position:0 -' + (90 * 3) + 'px"></span>Tyranitar</button>';
+			buf += '<button name="setBg" value="salamence"' + (cur === 'salamence' ? ' class="cur"' : '') + '><span class="bg" style="background-position:0 -' + (90 * 4) + 'px"></span>Salamence</button>';
 			buf += '<button name="setBg" value="solidblue"' + (cur === 'solidblue' ? ' class="cur"' : '') + '><span class="bg" style="background: #344b6c"></span>Solid blue</button>';
 
 			buf += '</div><div style="clear:left"></div>';
@@ -822,7 +821,7 @@
 			this.$el.html(buf);
 		},
 		setBg: function (bgid) {
-			var bgUrl = (bgid === 'solidblue' ? '#344b6c' : Dex.resourcePrefix + 'fx/client-bg-' + bgid + '.jpg');
+			var bgUrl = (bgid === 'solidblue' ? '#344b6c' : Dex.clientPrefix + 'fx/' + bgid + '.png');
 			Storage.bg.set(bgUrl, bgid);
 			this.$('.cur').removeClass('cur');
 			this.$('button[value="' + bgid + '"]').addClass('cur');
