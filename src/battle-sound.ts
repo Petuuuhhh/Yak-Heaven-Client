@@ -82,7 +82,7 @@ export class BattleBGM {
 
 		const progress = this.sound.currentTime * 1000;
 		if (this.loopend) {
-            if (loopend && progress > this.loopend - 1000) {
+            if (progress > this.loopend - 1000) {
                 this.sound.currentTime -= (this.loopend - this.loopstart) / 1000;
             }
 
