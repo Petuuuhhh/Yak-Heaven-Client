@@ -43,6 +43,6 @@ Config.routes = {
 	users: 'pokemonshowdown.com/users',
 	psmain: 'pokemonshowdown.com',
 	yakserver: 'github.com/Petuuuhhh/Yak-Heaven-Server/blob/yak',
-	yakclient: 'github.com/Petuuuhhh/Yak-Heaven-Client/raw/yak-old',
+	yakclient: 'github.com/Petuuuhhh/Yak-Heaven-Client/raw/yak',
 };
 /*** End automatically generated configuration ***/

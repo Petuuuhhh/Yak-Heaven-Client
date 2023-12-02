@@ -539,7 +539,8 @@ const Dex = new class implements ModdedDex {
 		let fakeSprite = false;
 		let modName = modSpecies.spriteid;
 		let id = toID(modName);
-		options.mod = this.getSpriteMod(options.mod, id, isFront ? 'front' : 'back', modSpecies.exists !== false);
+		if (options.mod != 'gen2prismdebug') options.mod = this.getSpriteMod(options.mod, id, isFront ? 'front' : 'back', modSpecies.exists !== false);
+        else if (options.mod == 'gen2prismdebug') options.mod = this.getSpriteMod('gen2prism', id, isFront ? 'front' : 'back', modSpecies.exists !== false);
 		if (options.mod) {
 			resourcePrefix = Dex.modResourcePrefix;
 			spriteDir = `${options.mod}/sprites/`;
@@ -698,7 +699,7 @@ const Dex = new class implements ModdedDex {
 			if (spriteData.gen >= 4 && miscData['frontf'] && options.gender === 'F') {
 				name += '-f';
 			}
-            console.log(options);
+
 			if (!options.mod.startsWith('gen2prism')) spriteData.url += dir + '/' + name + '.png';
             else {
                 spriteData.url += isFront ? dir + '/' + name + '.gif' : dir + '/' + name + '.png';
