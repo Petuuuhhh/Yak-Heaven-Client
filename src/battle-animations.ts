@@ -1577,7 +1577,7 @@ export class BattleScene implements BattleSceneStub {
 			this.bgm = BattleSound.loadBgm('audio/colosseum-miror-b.mp3', 896, 47462, this.bgm);
 			break;
 		case 1:
-			this.bgm = BattleSound.loadBgm('audio/title_screen.wav', 0, 180000, this.bgm, true, true);
+			this.bgm = BattleSound.loadBgm('audio/Battle! Brown [Hoenn Champion Battle].mp3', 12056, false, this.bgm, true, true);
 			break;
 		case 2:
 			this.bgm = BattleSound.loadBgm('audio/dpp-rival.mp3', 13888, 66352, this.bgm);

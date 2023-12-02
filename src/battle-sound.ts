@@ -9,7 +9,7 @@ export class BattleBGM {
 	url: string;
 	timer: number | undefined = undefined;
 	loopstart: number;
-	loopend: number;
+	loopend?: number;
     loop?: boolean;
     prism?: boolean;
 	/**
@@ -23,7 +23,7 @@ export class BattleBGM {
 	 * The sound should be rewound when it next plays.
 	 */
 	willRewind = true;
-	constructor(url: string, loopstart: number, loopend: number, loop?: boolean, prism?: boolean) {
+	constructor(url: string, loopstart: number, loopend?: number, loop?: boolean, prism?: boolean) {
 		this.url = url;
 		this.loopstart = loopstart;
 		this.loopend = loopend;
@@ -81,13 +81,15 @@ export class BattleBGM {
 		if (!this.sound) return;
 
 		const progress = this.sound.currentTime * 1000;
-		if (progress > this.loopend - 1000) {
-			this.sound.currentTime -= (this.loopend - this.loopstart) / 1000;
-		}
+		if (this.loopend) {
+            if (loopend && progress > this.loopend - 1000) {
+                this.sound.currentTime -= (this.loopend - this.loopstart) / 1000;
+            }
 
-		this.timer = setTimeout(() => {
-			this.updateTime();
-		}, Math.max(this.loopend - progress, 1));
+            this.timer = setTimeout(() => {
+                this.updateTime();
+            }, Math.max(this.loopend - progress, 1));
+        }
 	}
 
 	static update() {
@@ -142,7 +144,7 @@ export const BattleSound = new class {
 	}
 
 	/** loopstart and loopend are in milliseconds */
-	loadBgm(url: string, loopstart: number, loopend: number, replaceBGM?: BattleBGM | null, loop?: boolean, prism?: boolean) {
+	loadBgm(url: string, loopstart: number, loopend?: number, replaceBGM?: BattleBGM | null, loop?: boolean, prism?: boolean) {
 		if (replaceBGM) {
 			replaceBGM.stop();
 			this.deleteBgm(replaceBGM);
