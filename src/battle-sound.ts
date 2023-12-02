@@ -51,8 +51,24 @@ export class BattleBGM {
 		BattleSound.deleteBgm(this);
 		this.pause();
 	}
-
-	actuallyResume() {
+    async checkMp3Duration(mp3file) {
+      try {
+        let duration;
+        // Load an audio file
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+        const response = await fetch(mp3file.replace('github.com/Petuuuhhh/Yak-Heaven-Client/raw', 'raw.githubusercontent.com/Petuuuhhh/Yak-Heaven-Client'));
+        // Decode it
+        buffer = await audioContext.decodeAudioData(await response.arrayBuffer()).then(
+            function(value) {
+                duration = value.duration;
+            },
+        );
+        if (duration) return duration;
+      } catch (err) {
+        console.error(`Unable to fetch the audio file. Error: ${err.message}`);
+      }
+    }
+	async actuallyResume() {
 		if (this !== BattleSound.currentBgm()) return;
 		if (this.isActuallyPlaying) return;
 
@@ -63,18 +79,20 @@ export class BattleBGM {
 		this.isActuallyPlaying = true;
 		this.sound.volume = BattleSound.bgmVolume / 100;
 		this.sound.play();
-		this.updateTime();
+        let time = await this.checkMp3Duration(this.sound.src);
+        this.updateTime(time * 1000);
 	}
 	actuallyPause() {
 		if (!this.isActuallyPlaying) return;
 		this.isActuallyPlaying = false;
 		this.sound!.pause();
-		this.updateTime();
+        let time = this.checkMp3Duration(this.sound.src);
+        this.updateTime(time * 1000);
 	}
 	/**
 	 * Handles the hard part of looping the sound
 	 */
-	updateTime() {
+	updateTime(time: number) {
 		clearTimeout(this.timer);
 		this.timer = undefined;
 		if (this !== BattleSound.currentBgm()) return;
@@ -89,6 +107,15 @@ export class BattleBGM {
             this.timer = setTimeout(() => {
                 this.updateTime();
             }, Math.max(this.loopend - progress, 1));
+        }
+        else if (typeof(time) == 'number') {
+            if (progress > time - 1) {
+                this.sound.currentTime -= (time - this.loopstart) / 1000;
+            }
+
+            this.timer = setTimeout(() => {
+                this.updateTime(time);
+            }, Math.max(time - progress, 1));
         }
 	}
 
