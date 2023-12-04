@@ -109,7 +109,6 @@ export class BattleBGM {
             }, Math.max(this.loopend - progress, 1));
         }
         else  {
-            console.log(time, progress);
             if (progress > time - 1000) {
                 this.sound.currentTime -= (time - this.loopstart) / 1000;
             }
