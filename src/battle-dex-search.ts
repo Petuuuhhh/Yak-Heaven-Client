@@ -509,8 +509,8 @@ class DexSearch {
 			case 'type':
 				let type = fId.charAt(0).toUpperCase() + fId.slice(1) as TypeName;
 				buf.push(['header', `${type}-type Pok&eacute;mon`]);
-				for (let id in BattlePokedex) {
-					if (!BattlePokedex[id].types) continue;
+				for (let id in pokedex) {
+					if (!pokedex[id].types) continue;
 					if (this.dex.species.get(id).types.includes(type)) {
 						(illegal && id in illegal ? illegalBuf : buf).push(['pokemon', id as ID]);
 					}
@@ -519,8 +519,8 @@ class DexSearch {
 			case 'ability':
 				let ability = Dex.abilities.get(fId).name;
 				buf.push(['header', `${ability} Pok&eacute;mon`]);
-				for (let id in BattlePokedex) {
-					if (!BattlePokedex[id].abilities) continue;
+				for (let id in pokedex) {
+					if (!pokedex[id].abilities) continue;
 					if (Dex.hasAbility(this.dex.species.get(id), ability)) {
 						(illegal && id in illegal ? illegalBuf : buf).push(['pokemon', id as ID]);
 					}
@@ -532,8 +532,8 @@ class DexSearch {
 			case 'type':
 				let type = fId.charAt(0).toUpperCase() + fId.slice(1);
 				buf.push(['header', `${type}-type moves`]);
-				for (let id in BattleMovedex) {
-					if (BattleMovedex[id].type === type) {
+				for (let id in moveDex) {
+					if (moveDex[id].type === type) {
 						(illegal && id in illegal ? illegalBuf : buf).push(['move', id as ID]);
 					}
 				}
@@ -541,8 +541,8 @@ class DexSearch {
 			case 'category':
 				let category = fId.charAt(0).toUpperCase() + fId.slice(1);
 				buf.push(['header', `${category} moves`]);
-				for (let id in BattleMovedex) {
-					if (BattleMovedex[id].category === category) {
+				for (let id in moveDex) {
+					if (moveDex[id].category === category) {
 						(illegal && id in illegal ? illegalBuf : buf).push(['move', id as ID]);
 					}
 				}
@@ -1861,6 +1861,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 	}
 	sort(results: SearchRow[], sortCol: string, reverseSort?: boolean): SearchRow[] {
 		const sortOrder = reverseSort ? -1 : 1;
+        const table = !this.mod ? '' : BattleTeambuilderTable[this.mod].overrideMoveInfo;
 		switch (sortCol) {
 		case 'power':
 			let powerTable: {[id: string]: number | undefined} = {
@@ -1872,30 +1873,42 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				fissure: 1500, horndrill: 1500, guillotine: 1500,
 			};
 			return results.sort(([rowType1, id1], [rowType2, id2]) => {
-				const modPow1 = this.mod ? BattleTeambuilderTable[this.mod].overrideBP[id1] : null;
-				const modPow2 = this.mod ? BattleTeambuilderTable[this.mod].overrideBP[id2] : null;
+                let movedex1 = BattleMovedex;
+                let movedex2 = BattleMovedex;
+                if (this.mod) {
+                    if (table[id1] && table[id1].basePower) movedex1 = table;
+                    if (table[id2] && table[id2].basePower) movedex2 = table;
+                }
 				let move1 = this.dex.moves.get(id1);
 				let move2 = this.dex.moves.get(id2);
-				let pow1 = modPow1 || move1.basePower || powerTable[id1] || (move1.category === 'Status' ? -1 : 1400);
-				let pow2 = modPow2 || move2.basePower || powerTable[id2] || (move2.category === 'Status' ? -1 : 1400);
+				let pow1 = movedex1[id1].basePower || move1.basePower || powerTable[id1] || (move1.category === 'Status' ? -1 : 1400);
+				let pow2 = movedex2[id2].basePower || move2.basePower || powerTable[id2] || (move2.category === 'Status' ? -1 : 1400);
 				return (pow2 - pow1) * sortOrder;
 			});
 		case 'accuracy':
 			return results.sort(([rowType1, id1], [rowType2, id2]) => {
-				const modAcc1 = this.mod ? BattleTeambuilderTable[this.mod].overrideAcc[id1] : null;
-				const modAcc2 = this.mod ? BattleTeambuilderTable[this.mod].overrideAcc[id2] : null;
-				let accuracy1 = modAcc1 || BattleMovedex[id1].accuracy || 0;
-				let accuracy2 = modAcc2 || BattleMovedex[id2].accuracy || 0;
+                let movedex1 = BattleMovedex;
+                let movedex2 = BattleMovedex;
+                if (this.mod) {
+                    if (table[id1] && table[id1].accuracy) movedex1 = table;
+                    if (table[id2] && table[id2].accuracy) movedex2 = table;
+                }
+				let accuracy1 = movedex1[id1].accuracy || 0;
+				let accuracy2 = movedex2[id2].accuracy || 0;
 				if (accuracy1 === true) accuracy1 = 101;
 				if (accuracy2 === true) accuracy2 = 101;
 				return (accuracy2 - accuracy1) * sortOrder;
 			});
 		case 'pp':
 			return results.sort(([rowType1, id1], [rowType2, id2]) => {
-				const modPP1 = this.mod ? BattleTeambuilderTable[this.mod].overridePP[id1] : null;
-				const modPP2 = this.mod ? BattleTeambuilderTable[this.mod].overridePP[id2] : null;
-				let pp1 = modPP1 || BattleMovedex[id1].pp || 0;
-				let pp2 = modPP2 || BattleMovedex[id2].pp || 0;
+                let movedex1 = BattleMovedex;
+                let movedex2 = BattleMovedex;
+                if (this.mod) {
+                    if (table[id1] && table[id1].pp) movedex1 = table;
+                    if (table[id2] && table[id2].pp) movedex2 = table;
+                }
+				let pp1 = movedex1[id1].pp || 0;
+				let pp2 = movedex2[id2].pp || 0;
 				return (pp2 - pp1) * sortOrder;
 			});
 		case 'name':
