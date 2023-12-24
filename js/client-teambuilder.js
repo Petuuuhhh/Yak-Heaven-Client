@@ -3292,13 +3292,13 @@
 					set.ivs = {hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31};
 					if (this.curTeam.gen > 2) {
 						var HPivs = this.curTeam.dex.types.get(hpType).HPivs;
-						for (var i in exports.BattleTypeChart[hpType].HPivs) {
-							set.ivs[i] = exports.BattleTypeChart[hpType].HPivs[i];
+						for (var i in HPivs) {
+							set.ivs[i] = HPivs[i];
 						}
 					} else {
 						var HPdvs = this.curTeam.dex.types.get(hpType).HPdvs;
-						for (var i in exports.BattleTypeChart[hpType].HPdvs) {
-							set.ivs[i] = exports.BattleTypeChart[hpType].HPdvs[i] * 2;
+						for (var i in HPdvs) {
+							set.ivs[i] = HPdvs[i] * 2;
 						}
 						var atkDV = Math.floor(set.ivs.atk / 2);
 						var defDV = Math.floor(set.ivs.def / 2);
