@@ -219,7 +219,7 @@ const Dex = new class implements ModdedDex {
 		if (avatar.charAt(0) === '#') {
 			return Dex.resourcePrefix + 'sprites/trainers-custom/' + toID(avatar.substr(1)) + '.png';
 		}
-        if (avatar.includes('.') || avatar.endsWith('-prism')) {
+        if (avatar.includes('.') || avatar.endsWith('-prism') || avatar.endsWith('-pokescape')) {
             return `https://${Config.routes.yakserver}/config/avatars/${avatar}.png?raw=true`;
         }
 		if (avatar.includes('.')) {
