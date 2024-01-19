@@ -426,8 +426,8 @@ class DexSearch {
 							(!table || !table.overrideAbilityDesc || id in table.overrideAbilityDesc === false)
 						) continue;
 						else if (
-							typeIndex === 2 && id.replace(id.charAt(0), id.charAt(0).toUpperCase()) in window.BattleTypeChart === false &&
-							(!table || id.replace(id.charAt(0), id.charAt(0).toUpperCase()) in table.overrideTypeChart === false)
+							typeIndex === 2 && id in window.BattleTypeChart === false &&
+							(!table || id in table.overrideTypeChart === false)
 						) continue;
 
 			if (illegal && typeIndex === searchTypeIndex) {
