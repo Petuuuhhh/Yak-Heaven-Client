@@ -732,7 +732,7 @@ const Dex = new class implements ModdedDex {
 		let top = Math.floor(num / 12) * 30;
 		let left = (num % 12) * 40;
 		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
-		if (id == 'trihorneddragon') return 'background:transparent url(' + 'https://raw.githubusercontent.com/Petuuuhhh/Yak-Heaven-Client/ygo/sprites/icon/' + data.spriteid + '.png) no-repeat scroll -${left}px -${top}px${fainted}';
+		if (id == 'trihorneddragon') return 'background:transparent url(' + 'https://raw.githubusercontent.com/Petuuuhhh/Yak-Heaven-Client/ygo/sprites/icon/' + id + '.png) no-repeat scroll -0px -0px' + `${fainted}`;
 		else return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v16) no-repeat scroll -${left}px -${top}px${fainted}`;
 	}
 
