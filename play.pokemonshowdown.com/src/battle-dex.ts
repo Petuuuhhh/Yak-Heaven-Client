@@ -732,7 +732,8 @@ const Dex = new class implements ModdedDex {
 		let top = Math.floor(num / 12) * 30;
 		let left = (num % 12) * 40;
 		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
-		return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v16) no-repeat scroll -${left}px -${top}px${fainted}`;
+		if (id == 'trihorneddragon') return 'background:transparent url(' + 'https://raw.githubusercontent.com/Petuuuhhh/Yak-Heaven-Client/ygo/sprites/icon/' + data.spriteid + '.png) no-repeat scroll -${left}px -${top}px${fainted}';
+		else return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v16) no-repeat scroll -${left}px -${top}px${fainted}`;
 	}
 
 	getTeambuilderSpriteData(pokemon: any, gen: number = 0): TeambuilderSpriteData {
@@ -795,7 +796,7 @@ const Dex = new class implements ModdedDex {
 		if (!pokemon) return '';
 		const data = this.getTeambuilderSpriteData(pokemon, gen);
 		const shiny = (data.shiny ? '-shiny' : '');
-		if (data.spriteid == 'trihorneddragon') return 'background-image:url(' + 'https://raw.githubusercontent.com/Petuuuhhh/Yak-Heaven-Client/ygo/sprites/' + data.spriteid + '.png);background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat';
+		if (data.spriteid == 'trihorneddragon') return 'background-image:url(' + 'https://raw.githubusercontent.com/Petuuuhhh/Yak-Heaven-Client/ygo/sprites/front/' + data.spriteid + '.png);background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat';
 		else return 'background-image:url(' + Dex.resourcePrefix + data.spriteDir + shiny + '/' + data.spriteid + '.png);background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat';
 	}
 
