@@ -807,7 +807,11 @@ const Dex = new class implements ModdedDex {
 		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
 		Dex.species.get(id);
 		let species = window.BattlePokedexAltForms && window.BattlePokedexAltForms[id] ? window.BattlePokedexAltForms[id] : Dex.species.get(id);
+		let modid = mod;
 		mod = this.getSpriteMod(mod, id, 'icons', species.exists !== false);
+		let species2 = Dex.mod('ygo' as ID).species.get(id);
+		let password = species2.password;
+		if (modid == 'ygo') return 'background:transparent url(https://images.ygoprodeck.com/images/cards_cropped/' + password + '.jpg) no-repeat scroll -0px -0px' + `${fainted}` + ';background-size: 30px 30px';
 		if (mod) return `background:transparent url(${this.modResourcePrefix}${mod}/sprites/icons/${id}.png) no-repeat scroll -0px -0px${fainted}`;
 		return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v16) no-repeat scroll -${left}px -${top}px${fainted}`;
 
@@ -886,6 +890,9 @@ const Dex = new class implements ModdedDex {
 		const shiny = (data.shiny ? '-shiny' : '');
 		let resourcePrefix = Dex.resourcePrefix;
 		if (data.spriteDir.includes('front')) resourcePrefix = Dex.modResourcePrefix;
+		let species = this.moddedDexes['ygo'].species.get(toID(pokemon.species));
+		let password = species.password;
+		if (mod == 'ygo') return 'background-image:url(https://images.ygoprodeck.com/images/cards_cropped/' + password + '.jpg);background-size: 120px 120px;background-position:0px 0px;background-repeat:no-repeat';
 		return 'background-image:url(' + resourcePrefix + data.spriteDir + shiny + '/' + data.spriteid + '.png);background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat';
 	}
 

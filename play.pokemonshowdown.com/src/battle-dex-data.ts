@@ -1052,6 +1052,7 @@ const BattleAvatarNumbers: {[k: string]: string} = {
 };
 
 type StatName = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe';
+type YGOStatName = 'type' | 'attribute' | 'typing' | 'level' | 'attack' | 'defense';
 type NatureName = 'Adamant' | 'Bashful' | 'Bold' | 'Brave' | 'Calm' | 'Careful' | 'Docile' | 'Gentle' |
 	'Hardy' | 'Hasty' | 'Impish' | 'Jolly' | 'Lax' | 'Lonely' | 'Mild' | 'Modest' | 'Naive' | 'Naughty' |
 	'Quiet' | 'Quirky' | 'Rash' | 'Relaxed' | 'Sassy' | 'Serious' | 'Timid';
@@ -1514,7 +1515,7 @@ class Species implements Effect {
 	readonly changesFrom: string | undefined;
 
 	// YGO
-	readonly ygo?: boolean
+	readonly ygo?: boolean;
 	readonly password?: string;
 	readonly type?: string;
 	readonly attribute?: string;
