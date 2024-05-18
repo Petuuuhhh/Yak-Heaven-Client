@@ -1293,14 +1293,18 @@
 			// details
 			buf += '<div class="setcol setcol-details"><div class="setrow">';
 			buf += '<div class="setcell setcell-details"><label>Details</label><button class="textbox setdetails" tabindex="-1" name="details">';
-
+			if (this.curTeam.mod == 'ygo') {
+				for (var j in YGOStatNames) {
+					buf += '<span class="detailcell"><label>' + j + '</label>' + species[j] + '</span>';
+				}
+			}
 			var GenderChart = {
 				'M': 'Male',
 				'F': 'Female',
 				'N': '&mdash;'
 			};
-			buf += '<span class="detailcell detailcell-first"><label>Level</label>' + (set.level || 100) + '</span>';
-			if (this.curTeam.gen > 1) {
+			if (this.curTeam.mod != 'ygo') buf += '<span class="detailcell detailcell-first"><label>Level</label>' + (set.level || 100) + '</span>';
+			if (this.curTeam.gen > 1 && this.curTeam.mod != 'ygo') {
 				buf += '<span class="detailcell"><label>Gender</label>' + GenderChart[set.gender || species.gender || 'N'] + '</span>';
 				if (isLetsGo) {
 					buf += '<span class="detailcell"><label>Happiness</label>' + (typeof set.happiness === 'number' ? set.happiness : 70) + '</span>';
@@ -1356,43 +1360,47 @@
 
 			buf += '<div class="setrow">';
 			// if (this.curTeam.gen > 1 && !isLetsGo) buf += '<div class="setcell setcell-item"><label>Item</label><input type="text" name="item" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.item) + '" /></div>';
-			if (this.curTeam.gen > 1) buf += '<div class="setcell setcell-item"><label>Item</label><input type="text" name="item" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.item) + '" autocomplete="off" /></div>';
-			if (this.curTeam.gen > 2 && !isLetsGo) buf += '<div class="setcell setcell-ability"><label>Ability</label><input type="text" name="ability" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.ability) + '" autocomplete="off" /></div>';
+			if (this.curTeam.gen > 1 && this.curTeam.mod != 'ygo') buf += '<div class="setcell setcell-item"><label>Item</label><input type="text" name="item" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.item) + '" autocomplete="off" /></div>';
+			if (this.curTeam.gen > 2 && !isLetsGo && this.curTeam.mod != 'ygo') buf += '<div class="setcell setcell-ability"><label>Ability</label><input type="text" name="ability" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.ability) + '" autocomplete="off" /></div>';
 			buf += '</div></div>';
 
 			// moves
-			if (!set.moves) set.moves = [];
-			buf += '<div class="setcol setcol-moves"><div class="setcell"><label>Moves</label>';
-			buf += '<input type="text" name="move1" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[0]) + '" autocomplete="off" /></div>';
-			buf += '<div class="setcell"><input type="text" name="move2" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[1]) + '" autocomplete="off" /></div>';
-			buf += '<div class="setcell"><input type="text" name="move3" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[2]) + '" autocomplete="off" /></div>';
-			buf += '<div class="setcell"><input type="text" name="move4" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[3]) + '" autocomplete="off" /></div>';
-			buf += '</div>';
+			if (this.curTeam.mod != 'ygo') {
+				if (!set.moves) set.moves = [];
+				buf += '<div class="setcol setcol-moves"><div class="setcell"><label>Moves</label>';
+				buf += '<input type="text" name="move1" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[0]) + '" autocomplete="off" /></div>';
+				buf += '<div class="setcell"><input type="text" name="move2" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[1]) + '" autocomplete="off" /></div>';
+				buf += '<div class="setcell"><input type="text" name="move3" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[2]) + '" autocomplete="off" /></div>';
+				buf += '<div class="setcell"><input type="text" name="move4" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[3]) + '" autocomplete="off" /></div>';
+				buf += '</div>';
+			}
 
 			// stats
-			buf += '<div class="setcol setcol-stats"><div class="setrow"><label>Stats</label><button class="textbox setstats" name="stats">';
-			buf += '<span class="statrow statrow-head"><label></label> <span class="statgraph"></span> <em>' + (!isLetsGo ? 'EV' : 'AV') + '</em></span>';
-			var stats = {};
-			var defaultEV = ((this.curTeam.gen > 2 && !this.ignoreEVLimits) ? 0 : 252);
-			for (var j in BattleStatNames) {
-				if (j === 'spd' && this.curTeam.gen === 1) continue;
-				stats[j] = this.getStat(j, set);
-				var ev = (set.evs[j] === undefined ? defaultEV : set.evs[j]);
-				var evBuf = '<em>' + (ev === defaultEV ? '' : ev) + '</em>';
-				if (BattleNatures[set.nature] && BattleNatures[set.nature].plus === j) {
-					evBuf += '<small>+</small>';
-				} else if (BattleNatures[set.nature] && BattleNatures[set.nature].minus === j) {
-					evBuf += '<small>&minus;</small>';
+			if (this.curTeam.mod != 'ygo') {
+				buf += '<div class="setcol setcol-stats"><div class="setrow"><label>Stats</label><button class="textbox setstats" name="stats">';
+				buf += '<span class="statrow statrow-head"><label></label> <span class="statgraph"></span> <em>' + (!isLetsGo ? 'EV' : 'AV') + '</em></span>';
+				var stats = {};
+				var defaultEV = ((this.curTeam.gen > 2 && !this.ignoreEVLimits) ? 0 : 252);
+				for (var j in BattleStatNames) {
+					if (j === 'spd' && this.curTeam.gen === 1) continue;
+					stats[j] = this.getStat(j, set);
+					var ev = (set.evs[j] === undefined ? defaultEV : set.evs[j]);
+					var evBuf = '<em>' + (ev === defaultEV ? '' : ev) + '</em>';
+					if (BattleNatures[set.nature] && BattleNatures[set.nature].plus === j) {
+						evBuf += '<small>+</small>';
+					} else if (BattleNatures[set.nature] && BattleNatures[set.nature].minus === j) {
+						evBuf += '<small>&minus;</small>';
+					}
+					var width = stats[j] * 75 / 504;
+					if (j == 'hp') width = stats[j] * 75 / 704;
+					if (width > 75) width = 75;
+					var color = Math.floor(stats[j] * 180 / 714);
+					if (color > 360) color = 360;
+					var statName = this.curTeam.gen === 1 && j === 'spa' ? 'Spc' : BattleStatNames[j];
+					buf += '<span class="statrow"><label>' + statName + '</label> <span class="statgraph"><span style="width:' + width + 'px;background:hsl(' + color + ',40%,75%);"></span></span> ' + evBuf + '</span>';
 				}
-				var width = stats[j] * 75 / 504;
-				if (j == 'hp') width = stats[j] * 75 / 704;
-				if (width > 75) width = 75;
-				var color = Math.floor(stats[j] * 180 / 714);
-				if (color > 360) color = 360;
-				var statName = this.curTeam.gen === 1 && j === 'spa' ? 'Spc' : BattleStatNames[j];
-				buf += '<span class="statrow"><label>' + statName + '</label> <span class="statgraph"><span style="width:' + width + 'px;background:hsl(' + color + ',40%,75%);"></span></span> ' + evBuf + '</span>';
+				buf += '</button></div></div>';
 			}
-			buf += '</button></div></div>';
 
 			buf += '</div></li>';
 			return buf;

@@ -137,6 +137,15 @@ const BattleStatNames = {
 	spe: 'Spe',
 } as const;
 
+const YGOStatNames = {
+	type: 'Type',
+	attribute: 'Attribute',
+	typing: 'Typing',
+	level: 'Level',
+	attack: 'Attack',
+	defense: 'Defense',
+} as const;
+
 const BattleBaseSpeciesChart = [
 	"unown", "burmy", "shellos", "gastrodon", "deerling", "sawsbuck", "vivillon", "flabebe", "floette", "florges", "furfrou", "minior", "alcremie", "tatsugiri", "pokestarufo", "pokestarbrycenman", "pokestarmt", "pokestarmt2", "pokestartransport", "pokestargiant", "pokestarhumanoid", "pokestarmonster", "pokestarf00", "pokestarf002", "pokestarspirit", "pokestarblackdoor", "pokestarwhitedoor", "pokestarblackbelt",
 ] as ID[];
@@ -1063,6 +1072,7 @@ interface Effect {
 	 * WARNING: Always false if the relevant data files aren't loaded.
 	 */
 	readonly exists: boolean;
+	readonly format?: string;
 }
 
 class PureEffect implements Effect {
@@ -1451,6 +1461,7 @@ class Species implements Effect {
 	readonly name: string;
 	readonly gen: number;
 	readonly exists: boolean;
+	readonly format?: string;
 
 	// name
 	readonly baseSpecies: string;
@@ -1501,6 +1512,20 @@ class Species implements Effect {
 	readonly isNonstandard: string | null;
 	readonly unreleasedHidden: boolean | 'Past';
 	readonly changesFrom: string | undefined;
+
+	// YGO
+	readonly ygo?: boolean
+	readonly password?: string;
+	readonly type?: string;
+	readonly attribute?: string;
+	readonly typing?: string;
+	readonly level?: number;
+	readonly attack?: number;
+	readonly defense?: number;
+	readonly description?: string;
+	readonly effects?: Readonly<{
+		0: string, 1?: string, 2?: string, 3?: string, 4?: string,
+	}>;
 
 	constructor(id: ID, name: string, data: any) {
 		if (!data || typeof data !== 'object') data = {};
@@ -1556,7 +1581,24 @@ class Species implements Effect {
 		this.isNonstandard = data.isNonstandard || null;
 		this.unreleasedHidden = data.unreleasedHidden || false;
 		this.changesFrom = data.changesFrom || undefined;
-		if (!this.gen) {
+		this.ygo = data.ygo || false;
+		this.password = data.password || '';
+		this.type = data.type || '';
+		this.attribute = data.attribute || '';
+		this.typing = data.typing || '';
+		this.level = data.level || 0;
+		this.attack = data.attack || 0;
+		this.defense = data.defense || 0;
+		this.description = data.description || '';
+		this.effects = data.effects || {0: "No Effect"};
+		if (this.ygo && !this.format && this.num >= 1) {
+			if (this.num >= 189) {
+				this.format = 'Critter';
+			} else {
+				this.format = 'Yugi-Kaiba';
+			}
+		}
+		else if (!this.gen) {
 			if (this.num >= 906 || this.formeid.startsWith('-paldea')) {
 				this.gen = 9;
 			} else if (this.num >= 810 || this.formeid.startsWith('-galar') || this.formeid.startsWith('-hisui')) {
