@@ -348,7 +348,6 @@
 		var gen = this.engine ? this.engine.dex.gen : 9;
 
 		// type
-		console.log(this.engine.dex.modid);
 		if (this.engine.dex.modid != 'ygo') {
 			buf += '<span class="col typecol">';
 			var types = pokemon.types;
