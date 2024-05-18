@@ -9,13 +9,13 @@ const rootDir = path.resolve(__dirname, '..');
 process.chdir(rootDir);
 
 if (!fs.existsSync('caches/pokemon-showdown')) {
-	child_process.execSync('git clone https://github.com/smogon/pokemon-showdown.git', {
+	child_process.execSync('git clone -b ygo https://github.com/Petuuuhhh/Yak-Heaven-Server.git pokemon-showdown', {
 		cwd: 'caches',
 	});
 }
 
 process.stdout.write("Syncing data from Git repository... ");
-child_process.execSync('git pull', {cwd: 'caches/pokemon-showdown'});
+child_process.execSync('git pull https://github.com/Petuuuhhh/Yak-Heaven-Server ygo', {cwd: 'caches/pokemon-showdown'});
 child_process.execSync('npm run build', {cwd: 'caches/pokemon-showdown'});
 console.log("DONE");
 

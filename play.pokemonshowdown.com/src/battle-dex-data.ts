@@ -1068,6 +1068,7 @@ interface Effect {
 	 * WARNING: Always false if the relevant data files aren't loaded.
 	 */
 	readonly exists: boolean;
+	readonly format?: string;
 }
 
 class PureEffect implements Effect {
@@ -1452,6 +1453,7 @@ class Species implements Effect {
 	readonly name: string;
 	readonly gen: number;
 	readonly exists: boolean;
+	readonly format: string;
 
 	// name
 	readonly baseSpecies: string;
@@ -1502,6 +1504,17 @@ class Species implements Effect {
 	readonly isNonstandard: string | null;
 	readonly unreleasedHidden: boolean | 'Past';
 	readonly changesFrom: string | undefined;
+
+	// YGO
+	readonly password?: string;
+	readonly type?: string;
+	readonly attribute?: string;
+	readonly typing?: string;
+	readonly level?: number;
+	readonly attack?: number;
+	readonly defense?: number;
+	readonly description?: string;
+	readonly effect?: SpeciesAbility;
 
 	constructor(id: ID, name: string, data: any) {
 		if (!data || typeof data !== 'object') data = {};
@@ -1557,7 +1570,23 @@ class Species implements Effect {
 		this.isNonstandard = data.isNonstandard || null;
 		this.unreleasedHidden = data.unreleasedHidden || false;
 		this.changesFrom = data.changesFrom || undefined;
-		if (!this.gen) {
+		this.password = data.password || '';
+		this.type = data.type || '';
+		this.attribute = data.attribute || '';
+		this.typing = data.typing || '';
+		this.level = data.level || 0;
+		this.attack = data.attack || 0;
+		this.defense = data.defense || 0;
+		this.description = data.description || '';
+		this.effect = data.effect || '';
+		if (this.type && !this.format && this.num >= 1) {
+			if (this.num >= 189) {
+				this.format = 'Critter';
+			} else {
+				this.format = 'Yugi-Kaiba';
+			}
+		}
+		else if (!this.gen) {
 			if (this.num >= 906 || this.formeid.startsWith('-paldea')) {
 				this.gen = 9;
 			} else if (this.num >= 810 || this.formeid.startsWith('-galar') || this.formeid.startsWith('-hisui')) {
