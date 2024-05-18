@@ -1240,7 +1240,34 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 	sort(results: SearchRow[], sortCol: string, reverseSort?: boolean) {
 		const sortOrder = reverseSort ? -1 : 1;
 		const table = !this.mod ? '' : BattleTeambuilderTable[this.mod].overrideDexInfo;
-		if (['hp', 'atk', 'def', 'spa', 'spd', 'spe'].includes(sortCol)) {
+		if (['type2', 'attribute', 'typing'].includes(sortCol)) {
+			if (sortCol == 'type2') sortCol = 'type';
+			return results.sort(([rowType1, id1], [rowType2, id2]) => {
+				let pokedex1 = BattlePokedex;
+				let pokedex2 = BattlePokedex;
+				if (this.mod) {
+					if (table[id1] && table[id1].baseStats) pokedex1 = table;
+					if (table[id2] && table[id2].baseStats) pokedex2 = table;
+				}
+				const stat1ygo = Dex.mod('ygo' as ID).species.get(id1)[sortCol as YGOStatName];
+				const stat2ygo = Dex.mod('ygo' as ID).species.get(id2)[sortCol as YGOStatName];
+				return (stat1ygo < stat2ygo ? -1 : stat1ygo > stat2ygo ? 1 : 0) * sortOrder;
+			});
+		}
+		else if (['level', 'attack', 'defense'].includes(sortCol)) {
+			return results.sort(([rowType1, id1], [rowType2, id2]) => {
+				let pokedex1 = BattlePokedex;
+				let pokedex2 = BattlePokedex;
+				if (this.mod) {
+					if (table[id1] && table[id1].baseStats) pokedex1 = table;
+					if (table[id2] && table[id2].baseStats) pokedex2 = table;
+				}
+				const stat1ygo = Dex.mod('ygo' as ID).species.get(id1)[sortCol as YGOStatName];
+				const stat2ygo = Dex.mod('ygo' as ID).species.get(id2)[sortCol as YGOStatName];
+				return (stat2ygo - stat1ygo) * sortOrder;
+			});
+		}
+		else if (['hp', 'atk', 'def', 'spa', 'spd', 'spe'].includes(sortCol)) {
 			return results.sort(([rowType1, id1], [rowType2, id2]) => {
 				let pokedex1 = BattlePokedex;
 				let pokedex2 = BattlePokedex;

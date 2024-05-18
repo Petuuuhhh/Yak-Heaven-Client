@@ -330,6 +330,24 @@
 .utilichart .typesortcol {
 	width: 70px;
 }
+.utilichart .type2sortcol {
+	width: 60px;
+}
+.utilichart .attributesortcol {
+	width: 60px;
+}
+.utilichart .typingsortcol {
+	width: 60px;
+}
+.utilichart .levelsortcol {
+	width: 60px;
+}
+.utilichart .attacksortcol {
+	width: 60px;
+}
+.utilichart .defensesortcol {
+	width: 60px;
+}
 .utilichart .abilitysortcol {
 	width: 172px;
 }

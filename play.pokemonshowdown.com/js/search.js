@@ -258,23 +258,37 @@
 		return 'Error: not found';
 	};
 	Search.prototype.renderPokemonSortRow = function () {
+		var modid = this.engine.dex.modid;
 		var buf = '<li class="result"><div class="sortrow">';
-		buf += '<button class="sortcol numsortcol' + (!this.sortCol ? ' cur' : '') + '">' + (!this.sortCol ? 'Sort: ' : this.engine.firstPokemonColumn) + '</button>';
-		buf += '<button class="sortcol pnamesortcol' + (this.sortCol === 'name' ? ' cur' : '') + '" data-sort="name">Name</button>';
-		buf += '<button class="sortcol typesortcol' + (this.sortCol === 'type' ? ' cur' : '') + '" data-sort="type">Types</button>';
-		buf += '<button class="sortcol abilitysortcol' + (this.sortCol === 'ability' ? ' cur' : '') + '" data-sort="ability">Abilities</button>';
-		buf += '<button class="sortcol statsortcol' + (this.sortCol === 'hp' ? ' cur' : '') + '" data-sort="hp">HP</button>';
-		buf += '<button class="sortcol statsortcol' + (this.sortCol === 'atk' ? ' cur' : '') + '" data-sort="atk">Atk</button>';
-		buf += '<button class="sortcol statsortcol' + (this.sortCol === 'def' ? ' cur' : '') + '" data-sort="def">Def</button>';
-		if (this.engine.dex.gen >= 2) {
-			buf += '<button class="sortcol statsortcol' + (this.sortCol === 'spa' ? ' cur' : '') + '" data-sort="spa">SpA</button>';
-			buf += '<button class="sortcol statsortcol' + (this.sortCol === 'spd' ? ' cur' : '') + '" data-sort="spd">SpD</button>';
-		} else {
-			buf += '<button class="sortcol statsortcol' + (this.sortCol === 'spa' ? ' cur' : '') + '" data-sort="spa">Spc</button>';
+		if (modid != 'ygo') {
+			buf += '<button class="sortcol numsortcol' + (!this.sortCol ? ' cur' : '') + '">' + (!this.sortCol ? 'Sort: ' : this.engine.firstPokemonColumn) + '</button>';
+			buf += '<button class="sortcol pnamesortcol' + (this.sortCol === 'name' ? ' cur' : '') + '" data-sort="name">Name</button>';
+			buf += '<button class="sortcol typesortcol' + (this.sortCol === 'type' ? ' cur' : '') + '" data-sort="type">Types</button>';
+			buf += '<button class="sortcol abilitysortcol' + (this.sortCol === 'ability' ? ' cur' : '') + '" data-sort="ability">Abilities</button>';
+			buf += '<button class="sortcol statsortcol' + (this.sortCol === 'hp' ? ' cur' : '') + '" data-sort="hp">HP</button>';
+			buf += '<button class="sortcol statsortcol' + (this.sortCol === 'atk' ? ' cur' : '') + '" data-sort="atk">Atk</button>';
+			buf += '<button class="sortcol statsortcol' + (this.sortCol === 'def' ? ' cur' : '') + '" data-sort="def">Def</button>';
+			if (this.engine.dex.gen >= 2) {
+				buf += '<button class="sortcol statsortcol' + (this.sortCol === 'spa' ? ' cur' : '') + '" data-sort="spa">SpA</button>';
+				buf += '<button class="sortcol statsortcol' + (this.sortCol === 'spd' ? ' cur' : '') + '" data-sort="spd">SpD</button>';
+			} else {
+				buf += '<button class="sortcol statsortcol' + (this.sortCol === 'spa' ? ' cur' : '') + '" data-sort="spa">Spc</button>';
+			}
+			buf += '<button class="sortcol statsortcol' + (this.sortCol === 'spe' ? ' cur' : '') + '" data-sort="spe">Spe</button>';
+			buf += '<button class="sortcol statsortcol' + (this.sortCol === 'bst' ? ' cur' : '') + '" data-sort="bst">BST</button>';
+			buf += '</div></li>';
 		}
-		buf += '<button class="sortcol statsortcol' + (this.sortCol === 'spe' ? ' cur' : '') + '" data-sort="spe">Spe</button>';
-		buf += '<button class="sortcol statsortcol' + (this.sortCol === 'bst' ? ' cur' : '') + '" data-sort="bst">BST</button>';
-		buf += '</div></li>';
+		else {
+			buf += '<button class="sortcol numsortcol' + (!this.sortCol ? ' cur' : '') + '">' + (!this.sortCol ? 'Sort: ' : this.engine.firstPokemonColumn) + '</button>';
+			buf += '<button class="sortcol pnamesortcol' + (this.sortCol === 'name' ? ' cur' : '') + '" data-sort="name">Name</button>';
+			buf += '<button class="sortcol type2sortcol' + (this.sortCol === 'type2' ? ' cur' : '') + '" data-sort="type2">Types</button>';
+			buf += '<button class="sortcol attributesortcol' + (this.sortCol === 'attribute' ? ' cur' : '') + '" data-sort="attribute">Attributes</button>';
+			buf += '<button class="sortcol typingsortcol' + (this.sortCol === 'typing' ? ' cur' : '') + '" data-sort="typing">Typings</button>';
+			buf += '<button class="sortcol levelsortcol' + (this.sortCol === 'level' ? ' cur' : '') + '" data-sort="level">Level</button>';
+			buf += '<button class="sortcol attacksortcol' + (this.sortCol === 'attack' ? ' cur' : '') + '" data-sort="attack">Attack</button>';
+			buf += '<button class="sortcol defensesortcol' + (this.sortCol === 'defense' ? ' cur' : '') + '" data-sort="defense">Defense</button>';
+			buf += '</div></li>';
+		}
 		return buf;
 	};
 	Search.prototype.renderMoveSortRow = function () {
@@ -334,62 +348,79 @@
 		var gen = this.engine ? this.engine.dex.gen : 9;
 
 		// type
-		buf += '<span class="col typecol">';
-		var types = pokemon.types;
-		for (var i = 0; i < types.length; i++) {
-			buf += Dex.getTypeIcon(types[i], null, this.mod);
-		}
-		buf += '</span> ';
-		// abilities
-		if (gen >= 3) {
-			var abilities = pokemon.abilities;
-			if (gen >= 5) {
-				if (abilities['1']) {
-					buf += '<span class="col twoabilitycol">' + abilities['0'] + '<br />' +
-						abilities['1'] + '</span>';
+		console.log(this.engine.dex.modid);
+		if (this.engine.dex.modid != 'ygo') {
+			buf += '<span class="col typecol">';
+			var types = pokemon.types;
+			for (var i = 0; i < types.length; i++) {
+				buf += Dex.getTypeIcon(types[i], null, this.mod);
+			}
+			buf += '</span> ';
+			// abilities
+			if (gen >= 3) {
+				var abilities = pokemon.abilities;
+				if (gen >= 5) {
+					if (abilities['1']) {
+						buf += '<span class="col twoabilitycol">' + abilities['0'] + '<br />' +
+							abilities['1'] + '</span>';
+					} else {
+						buf += '<span class="col abilitycol">' + abilities['0'] + '</span>';
+					}
+					var unreleasedHidden = pokemon.unreleasedHidden;
+					if (unreleasedHidden === 'Past' && (this.mod === 'natdex' || gen < 8)) unreleasedHidden = false;
+					if (abilities['S']) {
+						if (abilities['H']) {
+							buf += '<span class="col twoabilitycol' + (unreleasedHidden ? ' unreleasedhacol' : '') + '">' + (abilities['H'] || '') + '<br />(' + abilities['S'] + ')</span>';
+						} else {
+							buf += '<span class="col abilitycol">(' + abilities['S'] + ')</span>';
+						}
+					} else if (abilities['H']) {
+						buf += '<span class="col abilitycol' + (unreleasedHidden ? ' unreleasedhacol' : '') + '">' + abilities['H'] + '</span>';
+					} else {
+						buf += '<span class="col abilitycol"></span>';
+					}
 				} else {
 					buf += '<span class="col abilitycol">' + abilities['0'] + '</span>';
-				}
-				var unreleasedHidden = pokemon.unreleasedHidden;
-				if (unreleasedHidden === 'Past' && (this.mod === 'natdex' || gen < 8)) unreleasedHidden = false;
-				if (abilities['S']) {
-					if (abilities['H']) {
-						buf += '<span class="col twoabilitycol' + (unreleasedHidden ? ' unreleasedhacol' : '') + '">' + (abilities['H'] || '') + '<br />(' + abilities['S'] + ')</span>';
-					} else {
-						buf += '<span class="col abilitycol">(' + abilities['S'] + ')</span>';
-					}
-				} else if (abilities['H']) {
-					buf += '<span class="col abilitycol' + (unreleasedHidden ? ' unreleasedhacol' : '') + '">' + abilities['H'] + '</span>';
-				} else {
-					buf += '<span class="col abilitycol"></span>';
+					buf += '<span class="col abilitycol">' + (abilities['1'] ? abilities['1'] : '') + '</span>';
 				}
 			} else {
-				buf += '<span class="col abilitycol">' + abilities['0'] + '</span>';
-				buf += '<span class="col abilitycol">' + (abilities['1'] ? abilities['1'] : '') + '</span>';
+				buf += '<span class="col abilitycol"></span>';
+				buf += '<span class="col abilitycol"></span>';
 			}
-		} else {
-			buf += '<span class="col abilitycol"></span>';
-			buf += '<span class="col abilitycol"></span>';
-		}
 
-		// base stats
-		var stats = pokemon.baseStats;
-		buf += '<span class="col statcol"><em>HP</em><br />' + stats.hp + '</span> ';
-		buf += '<span class="col statcol"><em>Atk</em><br />' + stats.atk + '</span> ';
-		buf += '<span class="col statcol"><em>Def</em><br />' + stats.def + '</span> ';
-		if (gen >= 2) {
-			buf += '<span class="col statcol"><em>SpA</em><br />' + stats.spa + '</span> ';
-			buf += '<span class="col statcol"><em>SpD</em><br />' + stats.spd + '</span> ';
-		} else {
-			buf += '<span class="col statcol"><em>Spc</em><br />' + stats.spa + '</span> ';
+			// base stats
+			var stats = pokemon.baseStats;
+			buf += '<span class="col statcol"><em>HP</em><br />' + stats.hp + '</span> ';
+			buf += '<span class="col statcol"><em>Atk</em><br />' + stats.atk + '</span> ';
+			buf += '<span class="col statcol"><em>Def</em><br />' + stats.def + '</span> ';
+			if (gen >= 2) {
+				buf += '<span class="col statcol"><em>SpA</em><br />' + stats.spa + '</span> ';
+				buf += '<span class="col statcol"><em>SpD</em><br />' + stats.spd + '</span> ';
+			} else {
+				buf += '<span class="col statcol"><em>Spc</em><br />' + stats.spa + '</span> ';
+			}
+			buf += '<span class="col statcol"><em>Spe</em><br />' + stats.spe + '</span> ';
+			var bst = 0;
+			for (i in stats) {
+				if (i === 'spd' && gen === 1) continue;
+				bst += stats[i];
+			}
+			buf += '<span class="col bstcol"><em>BST<br />' + bst + '</em></span> ';
 		}
-		buf += '<span class="col statcol"><em>Spe</em><br />' + stats.spe + '</span> ';
-		var bst = 0;
-		for (i in stats) {
-			if (i === 'spd' && gen === 1) continue;
-			bst += stats[i];
+		else {
+			var type = pokemon.type;
+			var attribute = pokemon.attribute;
+			var typing = pokemon.typing;
+			var level = pokemon.level;
+			var attack = pokemon.attack;
+			var defense = pokemon.defense;
+			buf += '<span class="col pokemonnamecol">' + type + '</span> ';
+			buf += '<span class="col pokemonnamecol">' + attribute + '</span> ';
+			buf += '<span class="col pokemonnamecol">' + typing + '</span> ';
+			buf += '<span class="col statcol"><em>Level<br />' + level + '</em></span> ';
+			buf += '<span class="col statcol"><em>Attack<br />' + attack + '</em></span> ';
+			buf += '<span class="col statcol"><em>Defense<br />' + defense + '</em></span> ';
 		}
-		buf += '<span class="col bstcol"><em>BST<br />' + bst + '</em></span> ';
 
 		buf += '</a></li>';
 

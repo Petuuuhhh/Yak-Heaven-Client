@@ -330,6 +330,24 @@
 .dexlist .typesortcol {
 	width: 70px;
 }
+.dexlist .type2sortcol {
+	width: 60px;
+}
+.dexlist .attributesortcol {
+	width: 60px;
+}
+.dexlist .typingsortcol {
+	width: 60px;
+}
+.dexlist .levelsortcol {
+	width: 60px;
+}
+.dexlist .attacksortcol {
+	width: 60px;
+}
+.dexlist .defensesortcol {
+	width: 60px;
+}
 .dexlist .abilitysortcol {
 	width: 172px;
 }
