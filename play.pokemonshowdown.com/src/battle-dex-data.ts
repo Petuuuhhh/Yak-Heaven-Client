@@ -142,6 +142,15 @@ const BattleStatNames = {
 	spe: 'Spe',
 } as const;
 
+const YGOStatNames = {
+	type: 'Type',
+	attribute: 'Attribute',
+	typing: 'Typing',
+	level: 'Level',
+	attack: 'Attack',
+	defense: 'Defense',
+} as const;
+
 const BattleBaseSpeciesChart = [
 	"unown", "burmy", "shellos", "gastrodon", "deerling", "sawsbuck", "vivillon", "flabebe", "floette", "florges", "furfrou", "minior", "alcremie", "tatsugiri", "pokestarufo", "pokestarbrycenman", "pokestarmt", "pokestarmt2", "pokestartransport", "pokestargiant", "pokestarhumanoid", "pokestarmonster", "pokestarf00", "pokestarf002", "pokestarspirit", "pokestarblackdoor", "pokestarwhitedoor", "pokestarblackbelt",
 ] as ID[];

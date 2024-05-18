@@ -1276,7 +1276,9 @@
 			if ($(window).width() < 640) this.show();
 		},
 		renderSet: function (set, i) {
-			var species = this.curTeam.dex.species.get(set.species);
+			var dex = this.curTeam.dex;
+			if (dex.modid == 'gen10') dex = Dex;
+			var species = dex.species.get(set.species);
 			var isLetsGo = this.curTeam.format.includes('letsgo');
 			var isBDSP = this.curTeam.format.includes('bdsp');
 			var isNatDex = this.curTeam.format.includes('nationaldex') || this.curTeam.format.includes('natdex');
@@ -1309,13 +1311,19 @@
 			buf += '<div class="setcol setcol-details"><div class="setrow">';
 			buf += '<div class="setcell setcell-details"><label>Details</label><button class="textbox setdetails" tabindex="-1" name="details">';
 
+			if (this.curTeam.gen > 9) {
+				for (var j in YGOStatNames) {
+					buf += '<span class="detailcell detailcell-first"><label>' + j + '</label>' + species[j] + '</span>';
+				}
+			}
+
 			var GenderChart = {
 				'M': 'Male',
 				'F': 'Female',
 				'N': '&mdash;'
 			};
-			buf += '<span class="detailcell detailcell-first"><label>Level</label>' + (set.level || 100) + '</span>';
-			if (this.curTeam.gen > 1) {
+			if (this.curTeam.gen < 10) buf += '<span class="detailcell detailcell-first"><label>Level</label>' + (set.level || 100) + '</span>';
+			if (this.curTeam.gen > 1 && this.curTeam.gen < 10) {
 				buf += '<span class="detailcell"><label>Gender</label>' + GenderChart[set.gender || species.gender || 'N'] + '</span>';
 				if (isLetsGo) {
 					buf += '<span class="detailcell"><label>Happiness</label>' + (typeof set.happiness === 'number' ? set.happiness : 70) + '</span>';
@@ -1365,43 +1373,47 @@
 			buf += '</div></div>';
 
 			buf += '<div class="setrow">';
-			if (this.curTeam.gen > 1 && !isLetsGo) buf += '<div class="setcell setcell-item"><label>Item</label><input type="text" name="item" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.item) + '" autocomplete="off" /></div>';
-			if (this.curTeam.gen > 2 && !isLetsGo) buf += '<div class="setcell setcell-ability"><label>Ability</label><input type="text" name="ability" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.ability) + '" autocomplete="off" /></div>';
+			if (this.curTeam.gen > 1 && !isLetsGo && this.curTeam.gen < 10) buf += '<div class="setcell setcell-item"><label>Item</label><input type="text" name="item" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.item) + '" autocomplete="off" /></div>';
+			if (this.curTeam.gen > 2 && !isLetsGo && this.curTeam.gen < 10) buf += '<div class="setcell setcell-ability"><label>Ability</label><input type="text" name="ability" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.ability) + '" autocomplete="off" /></div>';
 			buf += '</div></div>';
 
 			// moves
-			if (!set.moves) set.moves = [];
-			buf += '<div class="setcol setcol-moves"><div class="setcell"><label>Moves</label>';
-			buf += '<input type="text" name="move1" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[0]) + '" autocomplete="off" /></div>';
-			buf += '<div class="setcell"><input type="text" name="move2" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[1]) + '" autocomplete="off" /></div>';
-			buf += '<div class="setcell"><input type="text" name="move3" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[2]) + '" autocomplete="off" /></div>';
-			buf += '<div class="setcell"><input type="text" name="move4" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[3]) + '" autocomplete="off" /></div>';
-			buf += '</div>';
+			if (this.curTeam.gen < 10) {
+				if (!set.moves) set.moves = [];
+				buf += '<div class="setcol setcol-moves"><div class="setcell"><label>Moves</label>';
+				buf += '<input type="text" name="move1" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[0]) + '" autocomplete="off" /></div>';
+				buf += '<div class="setcell"><input type="text" name="move2" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[1]) + '" autocomplete="off" /></div>';
+				buf += '<div class="setcell"><input type="text" name="move3" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[2]) + '" autocomplete="off" /></div>';
+				buf += '<div class="setcell"><input type="text" name="move4" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.moves[3]) + '" autocomplete="off" /></div>';
+				buf += '</div>';
+			}
 
 			// stats
-			buf += '<div class="setcol setcol-stats"><div class="setrow"><label>Stats</label><button class="textbox setstats" name="stats">';
-			buf += '<span class="statrow statrow-head"><label></label> <span class="statgraph"></span> <em>' + (!isLetsGo ? 'EV' : 'AV') + '</em></span>';
-			var stats = {};
-			var defaultEV = (this.curTeam.gen > 2 ? 0 : 252);
-			for (var j in BattleStatNames) {
-				if (j === 'spd' && this.curTeam.gen === 1) continue;
-				stats[j] = this.getStat(j, set);
-				var ev = (set.evs[j] === undefined ? defaultEV : set.evs[j]);
-				var evBuf = '<em>' + (ev === defaultEV ? '' : ev) + '</em>';
-				if (BattleNatures[set.nature] && BattleNatures[set.nature].plus === j) {
-					evBuf += '<small>+</small>';
-				} else if (BattleNatures[set.nature] && BattleNatures[set.nature].minus === j) {
-					evBuf += '<small>&minus;</small>';
+			if (this.curTeam.gen < 10) {
+				buf += '<div class="setcol setcol-stats"><div class="setrow"><label>Stats</label><button class="textbox setstats" name="stats">';
+				buf += '<span class="statrow statrow-head"><label></label> <span class="statgraph"></span> <em>' + (!isLetsGo ? 'EV' : 'AV') + '</em></span>';
+				var stats = {};
+				var defaultEV = (this.curTeam.gen > 2 ? 0 : 252);
+				for (var j in BattleStatNames) {
+					if (j === 'spd' && this.curTeam.gen === 1) continue;
+					stats[j] = this.getStat(j, set);
+					var ev = (set.evs[j] === undefined ? defaultEV : set.evs[j]);
+					var evBuf = '<em>' + (ev === defaultEV ? '' : ev) + '</em>';
+					if (BattleNatures[set.nature] && BattleNatures[set.nature].plus === j) {
+						evBuf += '<small>+</small>';
+					} else if (BattleNatures[set.nature] && BattleNatures[set.nature].minus === j) {
+						evBuf += '<small>&minus;</small>';
+					}
+					var width = stats[j] * 75 / 504;
+					if (j == 'hp') width = stats[j] * 75 / 704;
+					if (width > 75) width = 75;
+					var color = Math.floor(stats[j] * 180 / 714);
+					if (color > 360) color = 360;
+					var statName = this.curTeam.gen === 1 && j === 'spa' ? 'Spc' : BattleStatNames[j];
+					buf += '<span class="statrow"><label>' + statName + '</label> <span class="statgraph"><span style="width:' + width + 'px;background:hsl(' + color + ',40%,75%);"></span></span> ' + evBuf + '</span>';
 				}
-				var width = stats[j] * 75 / 504;
-				if (j == 'hp') width = stats[j] * 75 / 704;
-				if (width > 75) width = 75;
-				var color = Math.floor(stats[j] * 180 / 714);
-				if (color > 360) color = 360;
-				var statName = this.curTeam.gen === 1 && j === 'spa' ? 'Spc' : BattleStatNames[j];
-				buf += '<span class="statrow"><label>' + statName + '</label> <span class="statgraph"><span style="width:' + width + 'px;background:hsl(' + color + ',40%,75%);"></span></span> ' + evBuf + '</span>';
+				buf += '</button></div></div>';
 			}
-			buf += '</button></div></div>';
 
 			buf += '</div></li>';
 			return buf;
@@ -2014,9 +2026,13 @@
 					buf += '<button disabled class="addpokemon" aria-label="Add Pok&eacute;mon"><i class="fa fa-plus"></i></button> ';
 					isAdd = true;
 				} else if (i == this.curSetLoc) {
-					buf += '<button disabled class="pokemon">' + pokemonicon + BattleLog.escapeHTML(set.name || this.curTeam.dex.species.get(set.species).baseSpecies || '<i class="fa fa-plus"></i>') + '</button> ';
+					var dex = this.curTeam.dex;
+					if (dex.modid == 'gen10') dex = Dex;
+					buf += '<button disabled class="pokemon">' + pokemonicon + BattleLog.escapeHTML(set.name || dex.species.get(set.species).baseSpecies || '<i class="fa fa-plus"></i>') + '</button> ';
 				} else {
-					buf += '<button name="selectPokemon" value="' + i + '" class="pokemon">' + pokemonicon + BattleLog.escapeHTML(set.name || this.curTeam.dex.species.get(set.species).baseSpecies) + '</button> ';
+					var dex = this.curTeam.dex;
+					if (dex.modid == 'gen10') dex = Dex;
+					buf += '<button name="selectPokemon" value="' + i + '" class="pokemon">' + pokemonicon + BattleLog.escapeHTML(set.name || dex.species.get(set.species).baseSpecies) + '</button> ';
 				}
 			}
 			if (this.curSetList.length < this.curTeam.capacity && !isAdd) {
@@ -2203,7 +2219,10 @@
 		plus: '',
 		minus: '',
 		smogdexLink: function (s) {
-			var species = this.curTeam.dex.species.get(s);
+			var dex = this.curTeam.dex;
+			if (dex.modid == 'gen10') dex = Dex;
+			var species = dex.species.get(s);
+			if (species.id == 'trihorneddragon') return 'https://www.formatlibrary.com/cards/' + species.name.replace(' ', '-') + '/';
 			var format = this.curTeam && this.curTeam.format;
 			var smogdexid = toID(species.baseSpecies);
 
@@ -2266,7 +2285,9 @@
 		updateStatForm: function (setGuessed) {
 			var buf = '';
 			var set = this.curSet;
-			var species = this.curTeam.dex.species.get(this.curSet.species);
+			var dex = this.curTeam.dex;
+			if (dex.modid == 'gen10') dex = Dex;
+			var species = dex.species.get(this.curSet.species);
 
 			var baseStats = species.baseStats;
 
@@ -2834,7 +2855,9 @@
 			var isBDSP = this.curTeam.format.includes('bdsp');
 			var isNatDex = this.curTeam.format.includes('nationaldex') || this.curTeam.format.includes('natdex');
 			var isHackmons = this.curTeam.format.includes('hackmons') || this.curTeam.format.endsWith('bh');
-			var species = this.curTeam.dex.species.get(set.species);
+			var dex = this.curTeam.dex;
+			if (dex.modid == 'gen10') dex = Dex;
+			var species = dex.species.get(set.species);
 			if (!set) return;
 			buf += '<div class="resultheader"><h3>Details</h3></div>';
 			buf += '<form class="detailsform">';
@@ -2935,7 +2958,9 @@
 			e.stopPropagation();
 			var set = this.curSet;
 			if (!set) return;
-			var species = this.curTeam.dex.species.get(set.species);
+			var dex = this.curTeam.dex;
+			if (dex.modid == 'gen10') dex = Dex;
+			var species = dex.species.get(set.species);
 			var isLetsGo = this.curTeam.format.includes('letsgo');
 			var isBDSP = this.curTeam.format.includes('bdsp');
 			var isNatDex = this.curTeam.format.includes('nationaldex') || this.curTeam.format.includes('natdex');
@@ -3204,7 +3229,9 @@
 			var format = this.curTeam.format;
 			switch (name) {
 			case 'pokemon':
-				val = (id in BattlePokedex ? this.curTeam.dex.species.get(e.currentTarget.value).name : '');
+				var dex = this.curTeam.dex;
+				if (dex.modid == 'gen10') dex = Dex;
+				val = (id in BattlePokedex ? dex.species.get(e.currentTarget.value).name : '');
 				break;
 			case 'ability':
 				if (id in BattleItems && format && format.endsWith("dualwielding")) {
@@ -3504,7 +3531,9 @@
 		},
 		setPokemon: function (val, selectNext) {
 			var set = this.curSet;
-			var species = this.curTeam.dex.species.get(val);
+			var dex = this.curTeam.dex;
+			if (dex.modid == 'gen10') dex = Dex;
+			var species = dex.species.get(val);
 			if (!species.exists || set.species === species.name) {
 				if (selectNext) this.$('input[name=item]').select();
 				return;
@@ -3579,7 +3608,9 @@
 
 			// do this after setting set.evs because it's assumed to exist
 			// after getStat is run
-			var species = this.curTeam.dex.species.get(set.species);
+			var dex = this.curTeam.dex;
+			if (dex.modid == 'gen10') dex = Dex;
+			var species = dex.species.get(set.species);
 			if (!species.exists) return 0;
 
 			if (!set.level) set.level = 100;
@@ -3621,6 +3652,7 @@
 			format = '' + format;
 			if (!format) return 7;
 			if (format.substr(0, 3) !== 'gen') return 6;
+			if (format.substr(4, 1) != ']') return parseInt(format.substr(3, 2), 10);
 			return parseInt(format.substr(3, 1), 10) || 6;
 		}
 	});
