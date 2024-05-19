@@ -1300,7 +1300,7 @@
 					var statName = YGOStatNames[j];
 					var species = this.dex.species.get(set.species);
 					stats[j] = species[j];
-					if (j === 'typing' || j === 'attribute' || j === 'type') buf += '<span class="statrow"><label>' + statName + ': ' + stats[j] + '</label></span>';
+					if (j === 'typing' || j === 'attribute' || j === 'type') buf += '<span class="statrow"><label>' + stats[j] + '</label></span>';
 					var width = stats[j] / 5000 * 450;
 					if (width > 450) width = 450;
 					var color = Math.floor(stats[j] * 180 / 714);
@@ -2138,10 +2138,12 @@
 			}
 		},
 		stats: function (i, button) {
-			if (!this.curSet) this.selectPokemon($(button).closest('li').val());
-			this.curChartName = 'stats';
-			this.curChartType = 'stats';
-			this.updateChart();
+			if (this.curTeam.mod != 'ygo') {
+				if (!this.curSet) this.selectPokemon($(button).closest('li').val());
+				this.curChartName = 'stats';
+				this.curChartType = 'stats';
+				this.updateChart();
+			}
 		},
 		details: function (i, button) {
 			if (!this.curSet) this.selectPokemon($(button).closest('li').val());
