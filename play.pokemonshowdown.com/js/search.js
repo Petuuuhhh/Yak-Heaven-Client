@@ -337,7 +337,12 @@
 				name += '<small>' + pokemon.name.substr(tagStart) + '</small>';
 			}
 		}
-		buf += '<span class="col pokemonnamecol">' + name + '</span> ';
+		if (this.engine.dex.modid != 'ygo') {
+			buf += '<span class="col pokemonnamecol">' + name + '</span> ';
+		}
+		else {
+			buf += '<span class="col cardnamecol">' + name + '</span> ';
+		}
 
 		// error
 		if (errorMessage) {
@@ -413,12 +418,12 @@
 			var level = pokemon.level;
 			var attack = pokemon.attack;
 			var defense = pokemon.defense;
-			buf += '<span class="col pokemonnamecol">' + type + '</span> ';
+			buf += '<span class="col type2col">' + type + '</span> ';
 			buf += '<span class="col pokemonnamecol">' + attribute + '</span> ';
 			buf += '<span class="col pokemonnamecol">' + typing + '</span> ';
-			buf += '<span class="col statcol"><em>Level<br />' + level + '</em></span> ';
-			buf += '<span class="col statcol"><em>Attack<br />' + attack + '</em></span> ';
-			buf += '<span class="col statcol"><em>Defense<br />' + defense + '</em></span> ';
+			buf += '<span class="col stat2col"><em>Level<br />' + level + '</em></span> ';
+			buf += '<span class="col stat2col"><em>Attack<br />' + attack + '</em></span> ';
+			buf += '<span class="col stat2col"><em>Defense<br />' + defense + '</em></span> ';
 		}
 
 		buf += '</a></li>';
