@@ -811,7 +811,7 @@ const Dex = new class implements ModdedDex {
 		mod = this.getSpriteMod(mod, id, 'icons', species.exists !== false);
 		let species2 = Dex.mod('ygo' as ID).species.get(id);
 		let password = species2.password;
-		if (modid == 'ygo') return 'background:transparent url(https://images.ygoprodeck.com/images/cards_cropped/' + password + '.jpg) no-repeat scroll -0px -0px' + `${fainted}` + ';background-size: 30px 30px';
+		if (modid == 'ygo') return 'background:transparent url(https://images.ygoprodeck.com/images/cards_cropped/' + password + '.jpg) no-repeat scroll 5px -0px' + `${fainted}` + ';background-size: 30px 30px';
 		if (mod) return `background:transparent url(${this.modResourcePrefix}${mod}/sprites/icons/${id}.png) no-repeat scroll -0px -0px${fainted}`;
 		return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v16) no-repeat scroll -${left}px -${top}px${fainted}`;
 
