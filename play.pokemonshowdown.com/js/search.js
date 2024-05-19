@@ -207,6 +207,8 @@
 		case 'ability':
 			var ability = this.engine.dex.abilities.get(id);
 			return this.renderAbilityRow(ability, matchStart, matchLength, errorMessage, attrs);
+		case 'type2':
+			return this.renderType2Row(id, matchStart, matchLength, errorMessage, attrs);
 		case 'type':
 			var type = {name: id[0].toUpperCase() + id.substr(1)};
 			return this.renderTypeRow(type, matchStart, matchLength, errorMessage);
@@ -554,6 +556,32 @@
 
 		return buf;
 	};
+	Search.prototype.renderType2Row = function (type, matchStart, matchLength, errorMessage, attrs) {
+		if (!attrs) attrs = '';
+		if (!type) return '<li class="result">Unrecognized type</li>';
+		var id = toID(YGOTypes[type]);
+		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'type2s/' + id + '" data-target="push"';
+		var buf = '<li class="result"><a' + attrs + ' data-entry="type2|' + BattleLog.escapeHTML(YGOTypes[type]) + '">';
+
+		// name
+		var name = YGOTypes[type];
+		if (matchLength) {
+			name = name.substr(0, matchStart) + '<b>' + name.substr(matchStart, matchLength) + '</b>' + name.substr(matchStart + matchLength);
+		}
+		buf += '<span class="col namecol">' + name + '</span> ';
+
+		// error
+		if (errorMessage) {
+			buf += errorMessage + '</a></li>';
+			return buf;
+		}
+
+		// buf += '<span class="col abilitydesccol">' + BattleLog.escapeHTML(ability.shortDesc) + '</span> ';
+
+		buf += '</a></li>';
+
+		return buf;
+	};
 	Search.prototype.renderMoveRow = function (move, matchStart, matchLength, errorMessage, attrs) {
 		if (!attrs) attrs = '';
 		if (!move) return '<li class="result">Unrecognized move</li>';
@@ -819,6 +847,7 @@
 	Search.renderTaggedPokemonRowInner = Search.prototype.renderTaggedPokemonRowInner;
 	Search.renderItemRow = Search.prototype.renderItemRow;
 	Search.renderAbilityRow = Search.prototype.renderAbilityRow;
+	Search.renderType2Row = Search.prototype.renderType2Row;
 	Search.renderMoveRow = Search.prototype.renderMoveRow;
 	Search.renderMoveRowInner = Search.prototype.renderMoveRowInner;
 	Search.renderTaggedMoveRow = Search.prototype.renderTaggedMoveRow;

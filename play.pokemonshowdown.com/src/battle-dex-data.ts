@@ -146,6 +146,11 @@ const YGOStatNames = {
 	defense: 'Defense',
 } as const;
 
+const YGOTypes = [
+	'Normal Monster',
+	'Effect Monster',
+] as ID[];
+
 const BattleBaseSpeciesChart = [
 	"unown", "burmy", "shellos", "gastrodon", "deerling", "sawsbuck", "vivillon", "flabebe", "floette", "florges", "furfrou", "minior", "alcremie", "tatsugiri", "pokestarufo", "pokestarbrycenman", "pokestarmt", "pokestarmt2", "pokestartransport", "pokestargiant", "pokestarhumanoid", "pokestarmonster", "pokestarf00", "pokestarf002", "pokestarspirit", "pokestarblackdoor", "pokestarwhitedoor", "pokestarblackbelt",
 ] as ID[];

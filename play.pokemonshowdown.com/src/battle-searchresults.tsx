@@ -171,6 +171,17 @@ class PSSearchResults extends preact.Component<{search: DexSearch}> {
 		</a></li>;
 	}
 
+	renderType2Row(id: ID, matchStart: number, matchEnd: number, errorMessage?: preact.ComponentChildren) {
+		const type = id;
+		if (!type) return <li class="result">Unrecognized type</li>;
+
+		return <li class="result"><a href={`${this.URL_ROOT}type2s/${id}`} data-target="push" data-entry={`type2|${type}`}>
+			<span class="col namecol">{this.renderName(type, matchStart, matchEnd)}</span>
+
+			{errorMessage}
+		</a></li>;
+	}
+
 	renderMoveRow(id: ID, matchStart: number, matchEnd: number, errorMessage?: preact.ComponentChildren) {
 		const search = this.props.search;
 		const move = search.dex.moves.get(id);
@@ -338,6 +349,8 @@ class PSSearchResults extends preact.Component<{search: DexSearch}> {
 			return this.renderItemRow(id as ID, matchStart, matchEnd, errorMessage);
 		case 'ability':
 			return this.renderAbilityRow(id as ID, matchStart, matchEnd, errorMessage);
+		case 'type2':
+			return this.renderType2Row(id as ID, matchStart, matchEnd, errorMessage);
 		case 'type':
 			return this.renderTypeRow(id as ID, matchStart, matchEnd, errorMessage);
 		case 'egggroup':
