@@ -1292,11 +1292,22 @@
 
 			// details
 			buf += '<div class="setcol setcol-details"><div class="setrow">';
-			buf += '<div class="setcell setcell-details"><label>Details</label><button class="textbox setdetails" tabindex="-1" name="details">';
+			buf += '<div class="setcell setcell-details"><label>Details</label>';
 			if (this.curTeam.mod == 'ygo') {
+				buf += '<div class="setcol2 setcol-stats2"><div class="setrow"><button class="textbox setstats2" name="stats">';
+				var stats = {};
 				for (var j in YGOStatNames) {
-					buf += '<span class="detailcell"><label>' + j + '</label>' + species[j] + '</span>';
+					var statName = YGOStatNames[j];
+					var species = this.dex.species.get(set.species);
+					stats[j] = species[j];
+					if (j === 'typing' || j === 'attribute' || j === 'type') buf += '<span class="statrow"><label>' + statName + ': ' + stats[j] + '</label></span>';
+					var width = stats[j] / 5000 * 450;
+					if (width > 450) width = 450;
+					var color = Math.floor(stats[j] * 180 / 714);
+					if (color > 360) color = 360;
+					if (statName == 'Attack' || statName == 'Defense') buf += '<span class="statrow"><label>' + statName + '</label> <span class="statgraph"><span style="width:' + width + 'px;background:hsl(' + color + ',40%,75%);"></span></span><em></em></span>';
 				}
+				buf += '</button></div></div>';
 			}
 			var GenderChart = {
 				'M': 'Male',
@@ -1334,7 +1345,7 @@
 					buf += '<span class="detailcell"><label>Tera Type</label>' + (species.forceTeraType || set.teraType || species.types[0]) + '</span>';
 				}
 			}
-			buf += '</button></div></div>';
+			if (this.curTeam.mod != 'ygo') buf += '</button></div></div>';
 
 			// item/type icons
 			buf += '<div class="setrow setrow-icons">';

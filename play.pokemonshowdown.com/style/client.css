@@ -2664,6 +2664,11 @@ a.ilink.yours {
 	width: 112px;
 	float: left;
 }
+.setcol2 {
+	height: 127px;
+	width: 500px;
+	float: left;
+}
 .setcol-icon {
 	background: transparent none no-repeat scroll center top;
 }
@@ -2731,7 +2736,10 @@ a.ilink.yours {
 .setcol-stats {
 	width: 142px;
 }
-.setdetails, .setstats {
+.setcol-stats2 {
+	width: 500px;
+}
+.setdetails, .setstats, .setstats2 {
 	display: block;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -2745,21 +2753,21 @@ a.ilink.yours {
 	background: #F8FBFD;
 	color: black;
 }
-.setdetails label, .setstats label {
+.setdetails label, .setstats label, .setstats2 label {
 	cursor: pointer;
 }
-.setdetails:hover, .setstats:hover {
+.setdetails:hover, .setstats:hover, .setstats2:hover {
 	border-color: #474747;
 	box-shadow: inset 0px 1px 2px #D2D2D2, 1px 1px 0 rgba(255,255,255,.6);
 	background: #FFFFFF;
 }
-.setdetails:focus, .setstats:focus,
-.dark .setdetails:focus, .dark .setstats:focus {
+.setdetails:focus, .setstats:focus, .setstats2:focus,
+.dark .setdetails:focus, .dark .setstats:focus, .dark .setstats2:focus {
 	border: 2px solid #004488;
 	margin: 1px 1px 0 0;
 	outline: 0 none;
 }
-.setdetails:active, .setstats:active {
+.setdetails:active, .setstats:active, .setstats2:active {
 	box-shadow: inset 0px 2px 2px #AAAAAA;
 	background: #E4E9ED;
 	border: 2px solid #004488;
@@ -2802,43 +2810,52 @@ a.ilink.yours {
 	width: 140px;
 	height: 110px;
 }
+.setstats2 {
+	width: 500px;
+	height: 108px;
+	padding-right: 0;
+}
+.setstats2:focus, .setstats2:active {
+	width: 502px;
+	height: 110px;
+}
 .statrow {
 	display: block;
 	height: 15px;
 }
-.setchart .setstats label {
+.setchart .setstats label, .setchart .setstats2 label {
 	float: left;
-	width: 20px;
+	width: 500px;
 	height: 5px;
 	text-align: right;
 	font-weight: normal;
 	font-size: 7pt;
 	padding: 0;
 }
-.setstats .statgraph {
+.setstats .statgraph, .setstats2 .statgraph {
 	float: left;
-	width: 75px;
+	width: 500px;
 	padding: 0 0 0 3px;
 	height: 5px;
 }
-.setstats .statgraph span {
+.setstats .statgraph span, .setstats2 .statgraph span {
 	display: block;
 	margin-top: 3px;
 	height: 6px;
 	background: #CCCCCC;
 }
-.setstats em {
+.setstats em, .setstats2 em {
 	float: left;
 	font-style: normal;
 	width: 22px;
 	height: 5px;
 	text-align: right;
 }
-.setstats small {
+.setstats small, .setstats2 small {
 	float: left;
 	font-size: 7pt;
 }
-.setstats .statrow-head em {
+.setstats .statrow-head em, .setstats2 .statrow-head em {
 	color: #555555;
 }
 .teamnameedit {
