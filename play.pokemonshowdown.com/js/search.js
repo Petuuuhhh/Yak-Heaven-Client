@@ -312,7 +312,8 @@
 		// number
 		var tier = this.engine ? this.engine.getTier(pokemon) : pokemon.num;
 		// buf += '<span class="col numcol">' + (pokemon.num >= 0 ? pokemon.num : 'CAP') + '</span> ';
-		buf += '<span class="col numcol">' + tier + '</span> ';
+		if (this.engine.dex.modid != 'ygo') buf += '<span class="col numcol">' + tier + '</span> ';
+		else buf += '<span class="col num2col">' + tier + '</span> ';
 
 		// icon
 		buf += '<span class="col iconcol">';
@@ -337,12 +338,8 @@
 				name += '<small>' + pokemon.name.substr(tagStart) + '</small>';
 			}
 		}
-		if (this.engine.dex.modid != 'ygo') {
-			buf += '<span class="col pokemonnamecol">' + name + '</span> ';
-		}
-		else {
-			buf += '<span class="col cardnamecol">' + name + '</span> ';
-		}
+		if (this.engine.dex.modid != 'ygo') buf += '<span class="col pokemonnamecol">' + name + '</span> ';
+		else buf += '<span class="col cardnamecol">' + name + '</span> ';
 
 		// error
 		if (errorMessage) {

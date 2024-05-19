@@ -119,6 +119,15 @@
 	font-size: 8pt;
 	white-space: nowrap;
 }
+.dexlist .num2col {
+	width: 40px;
+	padding-right: 5px;
+	text-align: right;
+	color: #999999;
+	padding-top: 8px;
+	font-size: 8pt;
+	white-space: nowrap;
+}
 .dexlist .statcol,
 .dexlist .bstcol,
 .dexlist .labelcol,
