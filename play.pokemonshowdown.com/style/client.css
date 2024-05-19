@@ -2823,24 +2823,45 @@ a.ilink.yours {
 	display: block;
 	height: 15px;
 }
-.setchart .setstats label, .setchart .setstats2 label {
+.setchart .setstats label {
 	float: left;
-	width: 500px;
+	width: 20px;
 	height: 5px;
 	text-align: right;
 	font-weight: normal;
 	font-size: 7pt;
 	padding: 0;
 }
-.setstats .statgraph, .setstats2 .statgraph {
+.setstats .statgraph {
 	float: left;
-	width: 500px;
+	width: 75px;
 	padding: 0 0 0 3px;
 	height: 5px;
 }
-.setstats .statgraph span, .setstats2 .statgraph span {
+.setchart .setstats2 label {
+	float: left;
+	width: 500px;
+	height: 5px;
+	text-align: left;
+	font-weight: normal;
+	font-size: 7pt;
+	padding: 0;
+}
+.setstats2 .statgraph {
+	float: left;
+	width: 500px;
+	padding: 0 0 0 50px;
+	height: 5px;
+}
+.setstats .statgraph span {
 	display: block;
 	margin-top: 3px;
+	height: 6px;
+	background: #CCCCCC;
+}
+.setstats2 .statgraph span {
+	display: block;
+	margin-top: 0px;
 	height: 6px;
 	background: #CCCCCC;
 }

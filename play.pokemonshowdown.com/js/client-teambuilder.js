@@ -1300,10 +1300,10 @@
 					var statName = YGOStatNames[j];
 					var species = this.dex.species.get(set.species);
 					stats[j] = species[j];
-					if (j === 'typing' || j === 'attribute' || j === 'type') buf += '<span class="statrow"><label>' + stats[j] + '</label></span>';
-					var width = stats[j] / 5000 * 450;
-					if (width > 450) width = 450;
-					var color = Math.floor(stats[j] * 180 / 714);
+					if (j === 'typing' || j === 'attribute' || j === 'type' || j == 'level') buf += '<span class="statrow"><label>' + stats[j] + '</label></span>';
+					var width = stats[j] / 5000 * 425;
+					if (width > 425) width = 425;
+					var color = Math.floor(stats[j] / 5000 * 360);
 					if (color > 360) color = 360;
 					if (statName == 'Attack' || statName == 'Defense') buf += '<span class="statrow"><label>' + statName + '</label> <span class="statgraph"><span style="width:' + width + 'px;background:hsl(' + color + ',40%,75%);"></span></span><em></em></span>';
 				}
