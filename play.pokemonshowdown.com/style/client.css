@@ -2850,7 +2850,7 @@ a.ilink.yours {
 .setstats2 .statgraph {
 	float: left;
 	width: 500px;
-	padding: 0 0 0 50px;
+	padding: 0 0 0 75px;
 	height: 5px;
 }
 .setstats .statgraph span {
