@@ -892,7 +892,7 @@ const Dex = new class implements ModdedDex {
 		if (data.spriteDir.includes('front')) resourcePrefix = Dex.modResourcePrefix;
 		let species = this.moddedDexes['ygo'].species.get(toID(pokemon.species));
 		let password = species.password;
-		if (mod == 'ygo') return 'background-image:url(https://images.ygoprodeck.com/images/cards_cropped/' + password + '.jpg);background-size: 120px 120px;background-position:0px 0px;background-repeat:no-repeat';
+		if (mod == 'ygo') return 'background-image:url(https://images.ygoprodeck.com/images/cards_cropped/' + password + '.jpg);background-size: 80px 80px;background-position:20px 20px;background-repeat:no-repeat';
 		return 'background-image:url(' + resourcePrefix + data.spriteDir + shiny + '/' + data.spriteid + '.png);background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat';
 	}
 
