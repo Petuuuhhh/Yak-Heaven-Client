@@ -180,7 +180,7 @@ const YGOTypes = [
 const YGOAttributes = [
 	'DARK',
 	'DIVINE',
-	'EARTH'
+	'EARTH',
 	'FIRE',
 	'LIGHT',
 	'WATER',
