@@ -801,6 +801,17 @@ function buildTeambuilderTables() {
 		return learnsetStr;
 	}
 
+	const packDetailsBTT = {};
+	BattleTeambuilderTable.packDetails = packDetailsBTT;
+	for (const id in Dex.data.Learnsets) {
+		const packDetails = Dex.data.Learnsets[id].packDetails;
+		if (!packDetails) continue;
+		packDetailsBTT[id] = {};
+		for (const packid in packDetails) {
+			packDetailsBTT[id][packid] = '0123456789'
+		}
+	}
+
 	const learnsets = {};
 	BattleTeambuilderTable.learnsets = learnsets;
 	for (const id in Dex.data.Learnsets) {
@@ -1342,6 +1353,18 @@ function buildTeambuilderTables() {
 						if (modString === undefined) overrideDexInfo[id][key] = undefined;
 						else overrideDexInfo[id][key] = JSON.parse(modString);
 					}
+				}
+			}
+			//pack details
+			const packDetailsBTT = {};
+			BattleTeambuilderTable[modConfigId].packDetails = packDetailsBTT;
+			for (const id in modDex.data.Learnsets) {
+				const packDetails = modDex.data.Learnsets[id].packDetails;
+				if (!packDetails) continue;
+				packDetailsBTT[id] = {};
+				for (const packid in packDetails) {
+					// Eventually push by release date
+					packDetailsBTT[id][packid] = '0123456789'
 				}
 			}
 			//learnsets

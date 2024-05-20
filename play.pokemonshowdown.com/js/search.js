@@ -87,7 +87,6 @@
 		return true;
 	};
 	Search.prototype.addFilter = function (node) {
-		console.log(node);
 		if (!node.dataset.entry) return false;
 		var entry = node.dataset.entry.split('|');
 		var result = this.engine.addFilter(entry);
