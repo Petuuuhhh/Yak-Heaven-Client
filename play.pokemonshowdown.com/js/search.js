@@ -87,6 +87,7 @@
 		return true;
 	};
 	Search.prototype.addFilter = function (node) {
+		console.log(node);
 		if (!node.dataset.entry) return false;
 		var entry = node.dataset.entry.split('|');
 		var result = this.engine.addFilter(entry);
@@ -209,6 +210,12 @@
 			return this.renderAbilityRow(ability, matchStart, matchLength, errorMessage, attrs);
 		case 'type2':
 			return this.renderType2Row(id, matchStart, matchLength, errorMessage, attrs);
+		case 'attribute':
+			return this.renderAttributeRow(id, matchStart, matchLength, errorMessage, attrs);
+		case 'typing':
+			return this.renderTypingRow(id, matchStart, matchLength, errorMessage, attrs);
+		case 'level':
+			return this.renderLevelRow(id, matchStart, matchLength, errorMessage, attrs);
 		case 'type':
 			var type = {name: id[0].toUpperCase() + id.substr(1)};
 			return this.renderTypeRow(type, matchStart, matchLength, errorMessage);
@@ -582,6 +589,84 @@
 
 		return buf;
 	};
+	Search.prototype.renderAttributeRow = function (attribute, matchStart, matchLength, errorMessage, attrs) {
+		if (!attrs) attrs = '';
+		if (!attribute) return '<li class="result">Unrecognized attribute</li>';
+		var id = toID(YGOAttributes[attribute]);
+		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'attributes/' + id + '" data-target="push"';
+		var buf = '<li class="result"><a' + attrs + ' data-entry="attribute|' + BattleLog.escapeHTML(YGOAttributes[attribute]) + '">';
+
+		// name
+		var name = YGOAttributes[attribute];
+		if (matchLength) {
+			name = name.substr(0, matchStart) + '<b>' + name.substr(matchStart, matchLength) + '</b>' + name.substr(matchStart + matchLength);
+		}
+		buf += '<span class="col namecol">' + name + '</span> ';
+
+		// error
+		if (errorMessage) {
+			buf += errorMessage + '</a></li>';
+			return buf;
+		}
+
+		// buf += '<span class="col abilitydesccol">' + BattleLog.escapeHTML(ability.shortDesc) + '</span> ';
+
+		buf += '</a></li>';
+
+		return buf;
+	};
+	Search.prototype.renderTypingRow = function (typing, matchStart, matchLength, errorMessage, attrs) {
+		if (!attrs) attrs = '';
+		if (!typing) return '<li class="result">Unrecognized typing</li>';
+		var id = toID(YGOTypings[typing]);
+		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'typings/' + id + '" data-target="push"';
+		var buf = '<li class="result"><a' + attrs + ' data-entry="typing|' + BattleLog.escapeHTML(YGOTypings[typing]) + '">';
+
+		// name
+		var name = YGOTypings[typing];
+		if (matchLength) {
+			name = name.substr(0, matchStart) + '<b>' + name.substr(matchStart, matchLength) + '</b>' + name.substr(matchStart + matchLength);
+		}
+		buf += '<span class="col namecol">' + name + '</span> ';
+
+		// error
+		if (errorMessage) {
+			buf += errorMessage + '</a></li>';
+			return buf;
+		}
+
+		// buf += '<span class="col abilitydesccol">' + BattleLog.escapeHTML(ability.shortDesc) + '</span> ';
+
+		buf += '</a></li>';
+
+		return buf;
+	};
+	Search.prototype.renderLevelRow = function (level, matchStart, matchLength, errorMessage, attrs) {
+		if (!attrs) attrs = '';
+		if (!level) return '<li class="result">Unrecognized level</li>';
+		var id = Number(level) + 1;
+		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'levels/' + id + '" data-target="push"';
+		var buf = '<li class="result"><a' + attrs + ' data-entry="level|' + (Number(level) + 1) + '">';
+
+		// name
+		var name = Number(level) + 1;
+		if (matchLength) {
+			name = name.substr(0, matchStart) + '<b>' + name.substr(matchStart, matchLength) + '</b>' + name.substr(matchStart + matchLength);
+		}
+		buf += '<span class="col namecol">' + name + '</span> ';
+
+		// error
+		if (errorMessage) {
+			buf += errorMessage + '</a></li>';
+			return buf;
+		}
+
+		// buf += '<span class="col abilitydesccol">' + BattleLog.escapeHTML(ability.shortDesc) + '</span> ';
+
+		buf += '</a></li>';
+
+		return buf;
+	};
 	Search.prototype.renderMoveRow = function (move, matchStart, matchLength, errorMessage, attrs) {
 		if (!attrs) attrs = '';
 		if (!move) return '<li class="result">Unrecognized move</li>';
@@ -848,6 +933,9 @@
 	Search.renderItemRow = Search.prototype.renderItemRow;
 	Search.renderAbilityRow = Search.prototype.renderAbilityRow;
 	Search.renderType2Row = Search.prototype.renderType2Row;
+	Search.renderAttributeRow = Search.prototype.renderAttributeRow;
+	Search.renderTypingRow = Search.prototype.renderTypingRow;
+	Search.renderLevelRow = Search.prototype.renderLevelRow;
 	Search.renderMoveRow = Search.prototype.renderMoveRow;
 	Search.renderMoveRowInner = Search.prototype.renderMoveRowInner;
 	Search.renderTaggedMoveRow = Search.prototype.renderTaggedMoveRow;

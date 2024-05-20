@@ -182,6 +182,39 @@ class PSSearchResults extends preact.Component<{search: DexSearch}> {
 		</a></li>;
 	}
 
+	renderAttributeRow(id: ID, matchStart: number, matchEnd: number, errorMessage?: preact.ComponentChildren) {
+		const attribute = id;
+		if (!attribute) return <li class="result">Unrecognized attribute</li>;
+
+		return <li class="result"><a href={`${this.URL_ROOT}attributes/${id}`} data-target="push" data-entry={`attribute|${attribute}`}>
+			<span class="col namecol">{this.renderName(attribute, matchStart, matchEnd)}</span>
+
+			{errorMessage}
+		</a></li>;
+	}
+
+	renderTypingRow(id: ID, matchStart: number, matchEnd: number, errorMessage?: preact.ComponentChildren) {
+		const typing = id;
+		if (!typing) return <li class="result">Unrecognized typing</li>;
+
+		return <li class="result"><a href={`${this.URL_ROOT}typings/${id}`} data-target="push" data-entry={`typing|${typing}`}>
+			<span class="col namecol">{this.renderName(typing, matchStart, matchEnd)}</span>
+
+			{errorMessage}
+		</a></li>;
+	}
+
+	renderLevelRow(id: ID, matchStart: number, matchEnd: number, errorMessage?: preact.ComponentChildren) {
+		const level = id;
+		if (!level) return <li class="result">Unrecognized level</li>;
+
+		return <li class="result"><a href={`${this.URL_ROOT}levels/${id}`} data-target="push" data-entry={`level|${level}`}>
+			<span class="col namecol">{this.renderName(level, matchStart, matchEnd)}</span>
+
+			{errorMessage}
+		</a></li>;
+	}
+
 	renderMoveRow(id: ID, matchStart: number, matchEnd: number, errorMessage?: preact.ComponentChildren) {
 		const search = this.props.search;
 		const move = search.dex.moves.get(id);
@@ -351,6 +384,12 @@ class PSSearchResults extends preact.Component<{search: DexSearch}> {
 			return this.renderAbilityRow(id as ID, matchStart, matchEnd, errorMessage);
 		case 'type2':
 			return this.renderType2Row(id as ID, matchStart, matchEnd, errorMessage);
+		case 'attribute':
+			return this.renderAttributeRow(id as ID, matchStart, matchEnd, errorMessage);
+		case 'typing':
+			return this.renderTypingRow(id as ID, matchStart, matchEnd, errorMessage);
+		case 'level':
+			return this.renderLevelRow(id as ID, matchStart, matchEnd, errorMessage);
 		case 'type':
 			return this.renderTypeRow(id as ID, matchStart, matchEnd, errorMessage);
 		case 'egggroup':

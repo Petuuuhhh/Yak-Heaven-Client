@@ -12,14 +12,14 @@
  */
 
 type SearchType = (
-	'pokemon' | 'type' | 'tier' | 'move' | 'item' | 'ability' | 'egggroup' | 'category' | 'article' | 'type2'
+	'pokemon' | 'type' | 'tier' | 'move' | 'item' | 'ability' | 'egggroup' | 'category' | 'article' | 'type2' | 'attribute' | 'typing' | 'level'
 );
 
 type SearchRow = (
-	[SearchType, ID, number?, number?] | ['sortpokemon' | 'sortmove', ''] | ['header' | 'html', string]
+	[SearchType, ID | number, number?, number?] | ['sortpokemon' | 'sortmove', ''] | ['header' | 'html', string | number]
 );
 
-type SearchFilter = [string, string];
+type SearchFilter = [string, string | number];
 
 /** ID, SearchType, index (if alias), offset (if offset alias) */
 declare const BattleSearchIndex: [ID, SearchType, number?, number?][];
@@ -96,6 +96,9 @@ class DexSearch {
 		case 'move': return new BattleMoveSearch('move', format, speciesOrSet);
 		case 'ability': return new BattleAbilitySearch('ability', format, speciesOrSet);
 		case 'type2': return new BattleType2Search('type2', format, speciesOrSet);
+		case 'attribute': return new BattleAttributeSearch('attribute', format, speciesOrSet);
+		case 'typing': return new BattleTypingSearch('typing', format, speciesOrSet);
+		case 'level': return new BattleLevelSearch('level', format, speciesOrSet);
 		case 'type': return new BattleTypeSearch('type', format, speciesOrSet);
 		case 'category': return new BattleCategorySearch('category', format, speciesOrSet);
 		}
@@ -133,7 +136,7 @@ class DexSearch {
 		let [type] = entry;
 		if (this.typedSearch.searchType === 'pokemon') {
 			if (type === this.sortCol) this.sortCol = null;
-			if (!['type', 'move', 'ability', 'egggroup', 'tier', 'type2'].includes(type)) return false;
+			if (!['type', 'move', 'ability', 'egggroup', 'tier', 'type2', 'attribute', 'typing', 'level'].includes(type)) return false;
 			if (type === 'move') entry[1] = toID(entry[1]);
 			if (!this.filters) this.filters = [];
 			this.results = null;
@@ -762,6 +765,12 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			return [this.sortRow!, ...BattleAbilitySearch.prototype.getDefaultResults.call(this)];
 		} else if (sortCol === 'type2') {
 			return [this.sortRow!, ...BattleType2Search.prototype.getDefaultResults.call(this)];
+		} else if (sortCol === 'attribute') {
+			return [this.sortRow!, ...BattleAttributeSearch.prototype.getDefaultResults.call(this)];
+		} else if (sortCol === 'typing') {
+			return [this.sortRow!, ...BattleTypingSearch.prototype.getDefaultResults.call(this)];
+		} else if (sortCol === 'level') {
+			return [this.sortRow!, ...BattleLevelSearch.prototype.getDefaultResults.call(this)];
 		}
 
 		if (!this.baseResults) {
@@ -966,7 +975,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 	abstract getTable(): {[id: string]: any};
 	abstract getDefaultResults(): SearchRow[];
 	abstract getBaseResults(): SearchRow[];
-	abstract filter(input: SearchRow, filters: string[][]): boolean;
+	abstract filter(input: SearchRow, filters: (string|number)[][]): boolean;
 	abstract sort(input: SearchRow[], sortCol: string, reverseSort?: boolean): SearchRow[];
 }
 
@@ -1216,7 +1225,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 
 		return tierSet;
 	}
-	filter(row: SearchRow, filters: string[][]) {
+	filter(row: SearchRow, filters: (string|number)[][]) {
 		if (!filters) return true;
 		if (row[0] !== 'pokemon') return true;
 		const species = this.dex.species.get(row[1]);
@@ -1227,6 +1236,15 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 				break;
 			case 'type2':
 				if (species.type !== value) return false;
+				break;
+			case 'attribute':
+				if (species.attribute !== value) return false;
+				break;
+			case 'typing':
+				if (species.typing !== value) return false;
+				break;
+			case 'level':
+				if (species.level !== value) return false;
 				break;
 			case 'egggroup':
 				if (species.eggGroups[0] !== value && species.eggGroups[1] !== value) return false;
@@ -1430,6 +1448,120 @@ class BattleType2Search extends BattleTypedSearch<'type2'> {
 			switch (filterType) {
 			case 'pokemon':
 				if (type != this.dex.species.get(value).type) return false;
+				break;
+			}
+		}
+		return true;
+	}
+	sort(results: SearchRow[], sortCol: string | null, reverseSort?: boolean): SearchRow[] {
+		throw new Error("invalid sortcol");
+	}
+}
+
+class BattleAttributeSearch extends BattleTypedSearch<'attribute'> {
+	getTable() {
+		return YGOAttributes;
+		}
+	getDefaultResults(): SearchRow[] {
+		const results: SearchRow[] = [];
+		for (let id in YGOAttributes) {
+			results.push(['attribute', id as ID]);
+		}
+		return results;
+	}
+	getBaseResults() {
+		if (!this.species) return this.getDefaultResults();
+		const dex = this.dex;
+		let species = dex.species.get(this.species);
+		let attributeSet: SearchRow[] = [['header', "Attributes"]];
+
+		attributeSet.push(['attribute', toID(species.attribute)]);
+		return attributeSet;
+	}
+	filter(row: SearchRow, filters: string[][]) {
+		if (!filters) return true;
+		if (row[0] !== 'attribute') return true;
+		const attribute = row[1];
+		for (const [filterType, value] of filters) {
+			switch (filterType) {
+			case 'pokemon':
+				if (attribute != this.dex.species.get(value).attribute) return false;
+				break;
+			}
+		}
+		return true;
+	}
+	sort(results: SearchRow[], sortCol: string | null, reverseSort?: boolean): SearchRow[] {
+		throw new Error("invalid sortcol");
+	}
+}
+
+class BattleTypingSearch extends BattleTypedSearch<'typing'> {
+	getTable() {
+		return YGOTypings;
+		}
+	getDefaultResults(): SearchRow[] {
+		const results: SearchRow[] = [];
+		for (let id in YGOTypings) {
+			results.push(['typing', id as ID]);
+		}
+		return results;
+	}
+	getBaseResults() {
+		if (!this.species) return this.getDefaultResults();
+		const dex = this.dex;
+		let species = dex.species.get(this.species);
+		let typingSet: SearchRow[] = [['header', "Attributes"]];
+
+		typingSet.push(['typing', toID(species.typing)]);
+		return typingSet;
+	}
+	filter(row: SearchRow, filters: string[][]) {
+		if (!filters) return true;
+		if (row[0] !== 'attribute') return true;
+		const typing = row[1];
+		for (const [filterType, value] of filters) {
+			switch (filterType) {
+			case 'pokemon':
+				if (typing != this.dex.species.get(value).typing) return false;
+				break;
+			}
+		}
+		return true;
+	}
+	sort(results: SearchRow[], sortCol: string | null, reverseSort?: boolean): SearchRow[] {
+		throw new Error("invalid sortcol");
+	}
+}
+
+class BattleLevelSearch extends BattleTypedSearch<'level'> {
+	getTable() {
+		return Array.from({length: 13}, (e, i)=> i);
+		}
+	getDefaultResults(): SearchRow[] {
+		const results: SearchRow[] = [];
+		for (let id in Array.from({length: 13}, (e, i)=> i)) {
+			results.push(['level', id as ID]);
+		}
+		return results;
+	}
+	getBaseResults() {
+		if (!this.species) return this.getDefaultResults();
+		const dex = this.dex;
+		let species = dex.species.get(this.species);
+		let levelSet: SearchRow[] = [['header', "Levels"]];
+
+		levelSet.push(['level', toID(species.level)]);
+		return levelSet;
+	}
+	filter(row: SearchRow, filters: (string|number)[][]) {
+		if (!filters) return true;
+		if (row[0] !== 'level') return true;
+		const level = row[1];
+		for (const [filterType, value] of filters) {
+			switch (filterType) {
+			case 'pokemon':
+				if (Number(level) != this.dex.species.get(value).level) return false;
 				break;
 			}
 		}
