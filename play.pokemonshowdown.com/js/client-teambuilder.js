@@ -3289,6 +3289,9 @@
 					this.$('button.setstats').focus();
 				}
 				break;
+			case 'move':
+				// Here
+				break;
 			}
 			this.save();
 		},
