@@ -108,8 +108,9 @@
 		var buf = '<p>Filters: ';
 		for (var i = 0; i < this.filters.length; i++) {
 			var text = this.filters[i][1];
-			if (this.filters[i][0] === 'move') text = this.engine.dex.species.get(text).name;
-			if (this.filters[i][0] === 'pokemon') text = this.engine.dex.moves.get(text).name;			buf += '<button class="filter" value="' + BattleLog.escapeHTML(this.filters[i].join(':')) + '">' + text + ' <i class="fa fa-times-circle"></i></button> ';
+			if (this.filters[i][0] === 'move') text = this.engine.dex.moves.get(text).name;
+			if (this.filters[i][0] === 'pokemon') text = this.engine.dex.species.get(text).name;	
+			buf += '<button class="filter" value="' + BattleLog.escapeHTML(this.filters[i].join(':')) + '">' + text + ' <i class="fa fa-times-circle"></i></button> ';
 		}
 		if (!q) buf += '<small style="color: #888">(backspace = delete filter)</small>';
 		return buf + '</p>';
@@ -752,6 +753,7 @@
 		else {
 			buf += '<span class="col packlabelcol"><em>Pack type</em><br />' + move.packType + '</span> ';
 			buf += '<span class="col packlabelcol"><em>Release date</em><br />' + move.releaseDate + '</span> ';
+			buf += '<span class="col packlabelcol"><em>Rarity</em><br />' + move.cards[toID(this.engine.typedSearch.set.species)] + '</span> ';
 		}
 
 		buf += '</a></li>';
