@@ -171,6 +171,17 @@ class PSSearchResults extends preact.Component<{search: DexSearch}> {
 		</a></li>;
 	}
 
+	renderPackRow(id: ID, matchStart: number, matchEnd: number, errorMessage?: preact.ComponentChildren) {
+		const pack = id;
+		if (!pack) return <li class="result">Unrecognized pack</li>;
+
+		return <li class="result"><a href={`${this.URL_ROOT}packs/${id}`} data-target="push" data-entry={`pack|${type}`}>
+			<span class="col namecol">{this.renderName(pack, matchStart, matchEnd)}</span>
+
+			{errorMessage}
+		</a></li>;
+	}
+	
 	renderType2Row(id: ID, matchStart: number, matchEnd: number, errorMessage?: preact.ComponentChildren) {
 		const type = id;
 		if (!type) return <li class="result">Unrecognized type</li>;
@@ -382,6 +393,8 @@ class PSSearchResults extends preact.Component<{search: DexSearch}> {
 			return this.renderItemRow(id as ID, matchStart, matchEnd, errorMessage);
 		case 'ability':
 			return this.renderAbilityRow(id as ID, matchStart, matchEnd, errorMessage);
+		case 'pack':
+			return this.renderPackRow(id as ID, matchStart, matchEnd, errorMessage);
 		case 'type2':
 			return this.renderType2Row(id as ID, matchStart, matchEnd, errorMessage);
 		case 'attribute':

@@ -12,7 +12,7 @@
  */
 
 type SearchType = (
-	'pokemon' | 'type' | 'tier' | 'move' | 'item' | 'ability' | 'egggroup' | 'category' | 'article' | 'type2' | 'attribute' | 'typing' | 'level'
+	'pokemon' | 'type' | 'tier' | 'move' | 'item' | 'ability' | 'egggroup' | 'category' | 'article' | 'type2' | 'attribute' | 'typing' | 'level' | 'pack'
 );
 
 type SearchRow = (
@@ -95,6 +95,7 @@ class DexSearch {
 		case 'item': return new BattleItemSearch('item', format, speciesOrSet);
 		case 'move': return new BattleMoveSearch('move', format, speciesOrSet);
 		case 'ability': return new BattleAbilitySearch('ability', format, speciesOrSet);
+		case 'pack': return new BattlePackSearch('pack', format, speciesOrSet);
 		case 'type2': return new BattleType2Search('type2', format, speciesOrSet);
 		case 'attribute': return new BattleAttributeSearch('attribute', format, speciesOrSet);
 		case 'typing': return new BattleTypingSearch('typing', format, speciesOrSet);
@@ -136,7 +137,7 @@ class DexSearch {
 		let [type] = entry;
 		if (this.typedSearch.searchType === 'pokemon') {
 			if (type === this.sortCol) this.sortCol = null;
-			if (!['type', 'move', 'ability', 'egggroup', 'tier', 'type2', 'attribute', 'typing', 'level'].includes(type)) return false;
+			if (!['type', 'move', 'ability', 'egggroup', 'tier', 'type2', 'attribute', 'typing', 'level', 'pack'].includes(type)) return false;
 			if (type === 'move') entry[1] = toID(entry[1]);
 			if (!this.filters) this.filters = [];
 			this.results = null;
@@ -763,6 +764,8 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			return [this.sortRow!, ...BattleCategorySearch.prototype.getDefaultResults.call(this)];
 		} else if (sortCol === 'ability') {
 			return [this.sortRow!, ...BattleAbilitySearch.prototype.getDefaultResults.call(this)];
+		} else if (sortCol === 'pack') {
+			return [this.sortRow!, ...BattlePackSearch.prototype.getDefaultResults.call(this)];
 		} else if (sortCol === 'type2') {
 			return [this.sortRow!, ...BattleType2Search.prototype.getDefaultResults.call(this)];
 		} else if (sortCol === 'attribute') {
@@ -1248,9 +1251,13 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		if (row[0] !== 'pokemon') return true;
 		const species = this.dex.species.get(row[1]);
 		for (const [filterType, value] of filters) {
+			const cards = this.dex.moves.get(value).cards;
 			switch (filterType) {
 			case 'type':
 				if (species.types[0] !== value && species.types[1] !== value) return false;
+				break;
+			case 'pack':
+				if (!(toID(species.name) in cards)) return false;
 				break;
 			case 'type2':
 				if (species.type !== value) return false;
@@ -1438,6 +1445,44 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 	}
 }
 
+class BattlePackSearch extends BattleTypedSearch<'pack'> {
+	getTable() {
+		return Packs;
+		}
+	getDefaultResults(): SearchRow[] {
+		const results: SearchRow[] = [];
+		for (let id in Packs) {
+			results.push(['pack', toID(Packs[id].name) as ID]);
+		}
+		return results;
+	}
+	getBaseResults() {
+		if (!this.species) return this.getDefaultResults();
+		const dex = this.dex;
+		let species = dex.species.get(this.species);
+		let attributeSet: SearchRow[] = [['header', "Packs"]];
+
+		attributeSet.push(['pack', toID(species.attribute)]);
+		return attributeSet;
+	}
+	filter(row: SearchRow, filters: string[][]) {
+		if (!filters) return true;
+		if (row[0] !== 'pack') return true;
+		const species = toID(this.dex.moves.get(row[1]).name);
+		for (const [filterType, value] of filters) {
+			switch (filterType) {
+			case 'pack':
+				if (!(species in this.dex.moves.get(value).cards)) return false;
+				break;
+			}
+		}
+		return true;
+	}
+	sort(results: SearchRow[], sortCol: string | null, reverseSort?: boolean): SearchRow[] {
+		throw new Error("invalid sortcol");
+	}
+}
+
 class BattleType2Search extends BattleTypedSearch<'type2'> {
 	getTable() {
 		return YGOTypes;
@@ -1529,7 +1574,7 @@ class BattleTypingSearch extends BattleTypedSearch<'typing'> {
 		if (!this.species) return this.getDefaultResults();
 		const dex = this.dex;
 		let species = dex.species.get(this.species);
-		let typingSet: SearchRow[] = [['header', "Attributes"]];
+		let typingSet: SearchRow[] = [['header', "Typings"]];
 
 		typingSet.push(['typing', toID(species.typing)]);
 		return typingSet;

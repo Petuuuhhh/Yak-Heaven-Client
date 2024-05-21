@@ -414,6 +414,9 @@
 .dexlist .typesortcol {
 	width: 70px;
 }
+.dexlist .packsortcol {
+	width: 60px;
+}
 .dexlist .type2sortcol {
 	width: 60px;
 }

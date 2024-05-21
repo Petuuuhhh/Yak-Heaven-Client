@@ -207,6 +207,8 @@
 		case 'ability':
 			var ability = this.engine.dex.abilities.get(id);
 			return this.renderAbilityRow(ability, matchStart, matchLength, errorMessage, attrs);
+		case 'pack':
+			return this.renderPacksRow(id, matchStart, matchLength, errorMessage, attrs);
 		case 'type2':
 			return this.renderType2Row(id, matchStart, matchLength, errorMessage, attrs);
 		case 'attribute':
@@ -295,6 +297,7 @@
 			buf += '<button class="sortcol levelsortcol' + (this.sortCol === 'level' ? ' cur' : '') + '" data-sort="level">Level</button>';
 			buf += '<button class="sortcol attacksortcol' + (this.sortCol === 'attack' ? ' cur' : '') + '" data-sort="attack">Attack</button>';
 			buf += '<button class="sortcol defensesortcol' + (this.sortCol === 'defense' ? ' cur' : '') + '" data-sort="defense">Defense</button>';
+			buf += '<button class="sortcol packsortcol' + (this.sortCol === 'pack' ? ' cur' : '') + '" data-sort="pack">Packs</button>';
 			buf += '</div></li>';
 		}
 		return buf;
@@ -557,6 +560,32 @@
 		}
 
 		buf += '<span class="col abilitydesccol">' + BattleLog.escapeHTML(ability.shortDesc) + '</span> ';
+
+		buf += '</a></li>';
+
+		return buf;
+	};
+	Search.prototype.renderPacksRow = function (pack, matchStart, matchLength, errorMessage, attrs) {
+		if (!attrs) attrs = '';
+		if (!pack) return '<li class="result">Unrecognized pack</li>';
+		var id = toID(Packs[pack].name);
+		if (Search.urlRoot) attrs += ' href="' + Search.urlRoot + 'packs/' + id + '" data-target="push"';
+		var buf = '<li class="result"><a' + attrs + ' data-entry="pack|' + BattleLog.escapeHTML(Packs[pack].name) + '">';
+
+		// name
+		var name = Packs[pack].name;
+		if (matchLength) {
+			name = name.substr(0, matchStart) + '<b>' + name.substr(matchStart, matchLength) + '</b>' + name.substr(matchStart + matchLength);
+		}
+		buf += '<span class="col namecol">' + name + '</span> ';
+
+		// error
+		if (errorMessage) {
+			buf += errorMessage + '</a></li>';
+			return buf;
+		}
+
+		// buf += '<span class="col abilitydesccol">' + BattleLog.escapeHTML(ability.shortDesc) + '</span> ';
 
 		buf += '</a></li>';
 

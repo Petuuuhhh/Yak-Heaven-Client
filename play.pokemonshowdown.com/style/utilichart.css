@@ -414,6 +414,9 @@
 .utilichart .typesortcol {
 	width: 70px;
 }
+.utilichart .packsortcol {
+	width: 60px;
+}
 .utilichart .type2sortcol {
 	width: 60px;
 }
