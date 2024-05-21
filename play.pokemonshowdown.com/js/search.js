@@ -691,7 +691,8 @@
 				name += '<small>' + move.name.substr(tagStart) + '</small>';
 			}
 		}
-		buf += '<span class="col movenamecol">' + name + '</span> ';
+		if (this.engine.dex.modid != 'ygo') buf += '<span class="col movenamecol">' + name + '</span> ';
+		else buf += '<span class="col packnamecol">' + name + '</span> ';
 
 		// error
 		if (errorMessage) {

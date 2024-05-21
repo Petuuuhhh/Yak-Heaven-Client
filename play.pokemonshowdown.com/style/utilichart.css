@@ -238,6 +238,13 @@
 	color: #000000;
 	font-size: 10pt;
 }
+.utilichart .packnamecol {
+	padding-top: 6px;
+	height: 23px;
+	width: 250px;
+	color: #000000;
+	font-size: 10pt;
+}
 .utilichart .shortmovenamecol {
 	padding-top: 6px;
 	height: 23px;
