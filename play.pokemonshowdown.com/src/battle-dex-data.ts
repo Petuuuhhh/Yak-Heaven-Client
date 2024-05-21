@@ -1390,7 +1390,7 @@ class Move implements Effect {
 	readonly noSketch: boolean;
 	readonly num: number;
 	readonly cards: ReadonlyArray<any> | null;
-	readonly cardType: string;
+	readonly packType: string;
 	readonly releaseDate: string;
 
 	constructor(id: ID, name: string, data: any) {
@@ -1433,7 +1433,7 @@ class Move implements Effect {
 		this.isMax = data.isMax || false;
 		this.maxMove = data.maxMove || {basePower: 0};
 		this.cards = data.cards || null;
-		this.cardType = data.cardType || undefined;
+		this.packType = data.packType || undefined;
 		this.releaseDate = data.releaseDate || undefined;
 		if (this.category !== 'Status' && !this.maxMove?.basePower) {
 			if (this.isZ || this.isMax) {

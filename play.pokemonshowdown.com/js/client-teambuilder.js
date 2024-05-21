@@ -1292,8 +1292,9 @@
 
 			// details
 			buf += '<div class="setcol setcol-details"><div class="setrow">';
-			buf += '<div class="setcell setcell-details"><label>Details</label>';
+			if (this.curTeam.mod != 'ygo') buf += '<div class="setcell setcell-details"><label>Details</label><button class="textbox setdetails" tabindex="-1" name="details">';
 			if (this.curTeam.mod == 'ygo') {
+				buf += '<div class="setcell setcell-details"><label>Details</label>';
 				buf += '<div class="setcol2 setcol-stats2"><div class="setrow"><button class="textbox setstats2" name="stats">';
 				var stats = {};
 				for (var j in YGOStatNames) {

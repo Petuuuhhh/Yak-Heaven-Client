@@ -699,24 +699,31 @@
 			return buf;
 		}
 
-		// type
-		buf += '<span class="col typecol">';
-		buf += Dex.getTypeIcon(move.type, null, this.engine.dex.modid);
-		buf += Dex.getCategoryIcon(move.category);
-		buf += '</span> ';
+		if (this.engine.dex.modid != 'ygo') {
+			// type
+			buf += '<span class="col typecol">';
+			buf += Dex.getTypeIcon(move.type, null, this.engine.dex.modid);
+			buf += Dex.getCategoryIcon(move.category);
+			buf += '</span> ';
 
-		// power, accuracy, pp
-		var pp = (move.pp === 1 || move.noPPBoosts ? move.pp : move.pp * 8 / 5);
-		if (this.engine && this.engine.dex.gen < 3) pp = Math.min(61, pp);
-		buf += '<span class="col labelcol">' + (move.category !== 'Status' ? ('<em>Power</em><br />' + (move.basePower || '&mdash;')) : '') + '</span> ';
-		buf += '<span class="col widelabelcol"><em>Accuracy</em><br />' + (move.accuracy && move.accuracy !== true ? move.accuracy + '%' : '&mdash;') + '</span> ';
-		buf += '<span class="col pplabelcol"><em>PP</em><br />' + pp + '</span> ';
+			// power, accuracy, pp
+			var pp = (move.pp === 1 || move.noPPBoosts ? move.pp : move.pp * 8 / 5);
+			if (this.engine && this.engine.dex.gen < 3) pp = Math.min(61, pp);
+			buf += '<span class="col labelcol">' + (move.category !== 'Status' ? ('<em>Power</em><br />' + (move.basePower || '&mdash;')) : '') + '</span> ';
+			buf += '<span class="col widelabelcol"><em>Accuracy</em><br />' + (move.accuracy && move.accuracy !== true ? move.accuracy + '%' : '&mdash;') + '</span> ';
+			buf += '<span class="col pplabelcol"><em>PP</em><br />' + pp + '</span> ';
 
-		// desc
-		if (this.engine.dex.gen < 9 && !BattleTeambuilderTable[this.engine.dex.modid]?.overrideMoveInfo?.[id]?.shortDesc) {
-			move.shortDesc = Dex.mod("gen" + this.engine.dex.gen).moves.get(id).shortDesc; // this does not correctly give the gen 1 description, but if it did this would be a fix
+			// desc
+			if (this.engine.dex.gen < 9 && !BattleTeambuilderTable[this.engine.dex.modid]?.overrideMoveInfo?.[id]?.shortDesc) {
+				move.shortDesc = Dex.mod("gen" + this.engine.dex.gen).moves.get(id).shortDesc; // this does not correctly give the gen 1 description, but if it did this would be a fix
+			}
+			buf += '<span class="col movedesccol">' + BattleLog.escapeHTML(move.shortDesc) + '</span> ';
 		}
-		buf += '<span class="col movedesccol">' + BattleLog.escapeHTML(move.shortDesc) + '</span> ';
+		else {
+			console.log(move);
+			buf += '<span class="col packlabelcol"><em>Pack type</em><br />' + move.packType + '</span> ';
+			buf += '<span class="col packlabelcol"><em>Release date</em><br />' + move.releaseDate + '</span> ';
+		}
 
 		buf += '</a></li>';
 

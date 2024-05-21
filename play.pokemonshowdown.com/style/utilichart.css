@@ -139,6 +139,13 @@
 	text-align: right;
 	font-size: 8pt;
 }
+.utilichart .packlabelcol {
+	padding-top: 1px;
+	height: 28px;
+	width: 150px;
+	text-align: right;
+	font-size: 8pt;
+}
 .utilichart .stat2col {
 	padding-top: 1px;
 	height: 28px;
@@ -160,12 +167,18 @@
 	width: 18px;
 	padding-right: 5px;
 }
+.utilichart .packlabelcol {
+	text-align: center;
+	width: 150px;
+	padding-right: 5px;
+}
 .utilichart .bstcol {
 	padding-left: 2px;
 }
 .utilichart .labelcol em,
 .utilichart .widelabelcol em,
 .utilichart .pplabelcol em,
+.utilichart .packlabelcol em,
 .utilichart .statcol em,
 .utilichart .bstcol em {
 	color: #999999;

@@ -139,6 +139,13 @@
 	text-align: right;
 	font-size: 8pt;
 }
+.dexlist .packlabelcol {
+	padding-top: 1px;
+	height: 28px;
+	width: 150px;
+	text-align: right;
+	font-size: 8pt;
+}
 .dexlist .stat2col {
 	padding-top: 1px;
 	height: 28px;
@@ -160,12 +167,18 @@
 	width: 18px;
 	padding-right: 5px;
 }
+.dexlist .packlabelcol {
+	text-align: center;
+	width: 150px;
+	padding-right: 5px;
+}
 .dexlist .bstcol {
 	padding-left: 2px;
 }
 .dexlist .labelcol em,
 .dexlist .widelabelcol em,
 .dexlist .pplabelcol em,
+.dexlist .packlabelcol em,
 .dexlist .statcol em,
 .dexlist .bstcol em {
 	color: #999999;
