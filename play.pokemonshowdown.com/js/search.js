@@ -721,7 +721,6 @@
 			buf += '<span class="col movedesccol">' + BattleLog.escapeHTML(move.shortDesc) + '</span> ';
 		}
 		else {
-			console.log(move);
 			buf += '<span class="col packlabelcol"><em>Pack type</em><br />' + move.packType + '</span> ';
 			buf += '<span class="col packlabelcol"><em>Release date</em><br />' + move.releaseDate + '</span> ';
 		}
