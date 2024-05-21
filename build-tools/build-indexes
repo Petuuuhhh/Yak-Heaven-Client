@@ -56,6 +56,12 @@ function es3stringify(obj) {
 	buf = buf.replace(/return\:/g, '"return":').replace(/new\:/g, '"new":').replace(/delete\:/g, '"delete":');
 	return buf;
 }
+function es3stringify2(obj) {
+	let buf = JSON.stringify(obj);
+	buf = buf.replace(/\"([A-Za-z][A-Za-z0-9]*)\"\:/g, '$1:');
+	// buf = buf.replace(/return\:/g, '"return":').replace(/new\:/g, '"new":').replace(/delete\:/g, '"delete":');
+	return buf;
+}
 
 function requireNoCache(pathSpec) {
 	delete require.cache[require.resolve(pathSpec)];
@@ -78,8 +84,9 @@ process.stdout.write("Building `data/pokedex.js`... ");
 buildPokedex();
 console.log("DONE");
 
-process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.js`...");
+process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets,packs.js`...");
 buildMoves();
+buildPacks();
 buildItems();
 buildAbilities();
 buildTypechart();
@@ -801,14 +808,14 @@ function buildTeambuilderTables() {
 		return learnsetStr;
 	}
 
-	const packDetailsBTT = {};
-	BattleTeambuilderTable.packDetails = packDetailsBTT;
+	const packDetails = {};
+	BattleTeambuilderTable.packDetails = packDetails;
 	for (const id in Dex.data.Learnsets) {
-		const packDetails = Dex.data.Learnsets[id].packDetails;
-		if (!packDetails) continue;
-		packDetailsBTT[id] = {};
-		for (const packid in packDetails) {
-			packDetailsBTT[id][packid] = '0123456789'
+		const packDetails_ = Dex.data.Learnsets[id].packDetails;
+		if (!packDetails_) continue;
+		packDetails[id] = {};
+		for (const packid in packDetails_) {
+			packDetails[id][packid] = '0123456789'
 		}
 	}
 
@@ -1356,15 +1363,15 @@ function buildTeambuilderTables() {
 				}
 			}
 			//pack details
-			const packDetailsBTT = {};
-			BattleTeambuilderTable[modConfigId].packDetails = packDetailsBTT;
+			const overridePackDetails = {};
+			BattleTeambuilderTable[modConfigId].overridePackDetails = overridePackDetails;
 			for (const id in modDex.data.Learnsets) {
 				const packDetails = modDex.data.Learnsets[id].packDetails;
 				if (!packDetails) continue;
-				packDetailsBTT[id] = {};
+				overridePackDetails[id] = {};
 				for (const packid in packDetails) {
 					// Eventually push by release date
-					packDetailsBTT[id][packid] = '0123456789'
+					overridePackDetails[id][packid] = '0123456789'
 				}
 			}
 			//learnsets
@@ -1688,6 +1695,17 @@ function buildMoves() {
 	const buf = 'exports.BattleMovedex = ' + es3stringify(Moves) + ';';
 	fs.writeFileSync('play.pokemonshowdown.com/data/moves.js', buf);
 	fs.writeFileSync('play.pokemonshowdown.com/data/moves.json', JSON.stringify(Moves));
+}
+
+/*********************************************************
+ * Build packs.js
+ *********************************************************/
+
+function buildPacks() {
+	const Packs = requireNoCache('../caches/DH2/dist/data/packs.js').Moves;
+	const buf = 'exports.Packdex = ' + es3stringify2(Packs) + ';';
+	fs.writeFileSync('play.pokemonshowdown.com/data/packs.js', buf);
+	fs.writeFileSync('play.pokemonshowdown.com/data/packs.json', JSON.stringify(Packs));
 }
 
 /*********************************************************

@@ -3,6 +3,7 @@
 
 declare var BattlePokedex: any;
 declare var BattleMovedex: any;
+declare var Packdex: any;
 declare var BattleAbilities: any;
 declare var BattleItems: any;
 declare var BattleAliases: any;

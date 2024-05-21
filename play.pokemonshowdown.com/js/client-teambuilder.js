@@ -1348,32 +1348,34 @@
 			if (this.curTeam.mod != 'ygo') buf += '</button></div></div>';
 
 			// item/type icons
-			buf += '<div class="setrow setrow-icons">';
-			buf += '<div class="setcell">';
-			var itemicon = '<span class="itemicon"></span>';
-			if (set.item) {
-				var item = this.curTeam.dex.items.get(set.item);
-				itemicon = '<span class="itemicon" style="' + Dex.getItemIcon(item, this.curTeam.mod) + '"></span>';
-			}
-			buf += itemicon;
-			buf += '</div>';
-			buf += '<div class="setcell setcell-typeicons">';
-			var types = species.types;
-			var table = (this.curTeam.gen < 7 ? BattleTeambuilderTable['gen' + this.curTeam.gen] : null);
-			if (
-				table && table.overrideDexInfo && species.id in table.overrideDexInfo &&
-				table.overrideDexInfo[species.id].types
-			) types = table.overrideDexInfo[species.id].types; 
-			if (types) {
-				for (var i = 0; i < types.length; i++) buf += Dex.getTypeIcon(types[i], null, this.curTeam.mod);
-			}
-			buf += '</div></div>';
+			if (this.curTeam.mod != 'ygo') {
+				buf += '<div class="setrow setrow-icons">';
+				buf += '<div class="setcell">';
+				var itemicon = '<span class="itemicon"></span>';
+				if (set.item) {
+					var item = this.curTeam.dex.items.get(set.item);
+					itemicon = '<span class="itemicon" style="' + Dex.getItemIcon(item, this.curTeam.mod) + '"></span>';
+				}
+				buf += itemicon;
+				buf += '</div>';
+				buf += '<div class="setcell setcell-typeicons">';
+				var types = species.types;
+				var table = (this.curTeam.gen < 7 ? BattleTeambuilderTable['gen' + this.curTeam.gen] : null);
+				if (
+					table && table.overrideDexInfo && species.id in table.overrideDexInfo &&
+					table.overrideDexInfo[species.id].types
+				) types = table.overrideDexInfo[species.id].types; 
+				if (types) {
+					for (var i = 0; i < types.length; i++) buf += Dex.getTypeIcon(types[i], null, this.curTeam.mod);
+				}
+				buf += '</div></div>';
 
-			buf += '<div class="setrow">';
-			// if (this.curTeam.gen > 1 && !isLetsGo) buf += '<div class="setcell setcell-item"><label>Item</label><input type="text" name="item" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.item) + '" /></div>';
-			if (this.curTeam.gen > 1 && this.curTeam.mod != 'ygo') buf += '<div class="setcell setcell-item"><label>Item</label><input type="text" name="item" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.item) + '" autocomplete="off" /></div>';
-			if (this.curTeam.gen > 2 && !isLetsGo && this.curTeam.mod != 'ygo') buf += '<div class="setcell setcell-ability"><label>Ability</label><input type="text" name="ability" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.ability) + '" autocomplete="off" /></div>';
-			buf += '</div></div>';
+				buf += '<div class="setrow">';
+				// if (this.curTeam.gen > 1 && !isLetsGo) buf += '<div class="setcell setcell-item"><label>Item</label><input type="text" name="item" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.item) + '" /></div>';
+				if (this.curTeam.gen > 1 && this.curTeam.mod != 'ygo') buf += '<div class="setcell setcell-item"><label>Item</label><input type="text" name="item" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.item) + '" autocomplete="off" /></div>';
+				if (this.curTeam.gen > 2 && !isLetsGo && this.curTeam.mod != 'ygo') buf += '<div class="setcell setcell-ability"><label>Ability</label><input type="text" name="ability" class="textbox chartinput" value="' + BattleLog.escapeHTML(set.ability) + '" autocomplete="off" /></div>';
+				buf += '</div></div>';
+			}
 
 			// moves
 			if (this.curTeam.mod != 'ygo') {
@@ -2142,6 +2144,12 @@
 				if (!this.curSet) this.selectPokemon($(button).closest('li').val());
 				this.curChartName = 'stats';
 				this.curChartType = 'stats';
+				this.updateChart();
+			}
+			else {
+				if (!this.curSet) this.selectPokemon($(button).closest('li').val());
+				this.curChartName = 'move';
+				this.curChartType = 'move';
 				this.updateChart();
 			}
 		},

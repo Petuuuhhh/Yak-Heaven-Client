@@ -314,6 +314,30 @@ const Dex = new class implements ModdedDex {
 		},
 	};
 
+	packs = {
+		get: (nameOrPack: string | Move | null | undefined): Move => {
+			if (nameOrPack && typeof nameOrPack !== 'string') {
+				// TODO: don't accept Moves here
+				return nameOrPack;
+			}
+			let name = nameOrPack || '';
+			let id = toID(nameOrPack);
+			if (window.BattleAliases && id in BattleAliases) {
+				name = BattleAliases[id];
+				id = toID(name);
+			}
+			if (!window.Packdex) window.Packdex = {};
+			let data = window.Packdex[id];
+			if (data && typeof data.exists === 'boolean') return data;
+
+			if (!data) data = {exists: false};
+			
+			let pack = new Move(id, name, data);
+			window.Packdex[id] = pack;
+			return pack;
+		},
+	};
+
 	getGen3Category(type: string) {
 		return [
 			'Fire', 'Water', 'Grass', 'Electric', 'Ice', 'Psychic', 'Dark', 'Dragon',

@@ -1340,6 +1340,8 @@ interface MoveFlags {
 	wind?: 1 | 0;
 }
 
+type Cards = 'Placeholder';
+
 type MoveTarget = 'normal' | 'any' | 'adjacentAlly' | 'adjacentFoe' | 'adjacentAllyOrSelf' | 'anyAlly' | // single-target
 	'self' | 'randomNormal' | // single-target, automatic
 	'allAdjacent' | 'allAdjacentFoes' | // spread
@@ -1387,6 +1389,9 @@ class Move implements Effect {
 	readonly secondaries: ReadonlyArray<any> | null;
 	readonly noSketch: boolean;
 	readonly num: number;
+	readonly cards: ReadonlyArray<any> | null;
+	readonly cardType: string;
+	readonly releaseDate: string;
 
 	constructor(id: ID, name: string, data: any) {
 		if (!data || typeof data !== 'object') data = {};
@@ -1427,6 +1432,9 @@ class Move implements Effect {
 
 		this.isMax = data.isMax || false;
 		this.maxMove = data.maxMove || {basePower: 0};
+		this.cards = data.cards || null;
+		this.cardType = data.cardType || undefined;
+		this.releaseDate = data.releaseDate || undefined;
 		if (this.category !== 'Status' && !this.maxMove?.basePower) {
 			if (this.isZ || this.isMax) {
 				this.maxMove = {basePower: 1};

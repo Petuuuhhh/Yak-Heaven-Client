@@ -853,6 +853,11 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		if (baseLearnsetid in table.learnsets) return baseLearnsetid;
 		return '' as ID;
 	}
+	protected firstPackDetailsid(speciesid: ID) {
+		let table = BattleTeambuilderTable['ygo'];
+		if (speciesid in table.overridePackDetails) return speciesid;
+		return '' as ID;
+	}
 	protected nextLearnsetid(learnsetid: ID, speciesid: ID) {
 		if (learnsetid === 'lycanrocdusk' || (speciesid === 'rockruff' && learnsetid === 'rockruff')) {
 			return 'rockruffdusk' as ID;
@@ -868,6 +873,9 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		const next = lsetSpecies.battleOnly || lsetSpecies.changesFrom || lsetSpecies.prevo;
 		if (next) return toID(next);
 
+		return '' as ID;
+	}
+	protected nextPackDetailsID(packDetails: ID, speciesid: ID) {
 		return '' as ID;
 	}
 	protected canLearn(speciesid: ID, moveid: ID) {
@@ -902,11 +910,21 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
 			let learnset = table.learnsets[learnsetid];
 			if (this.mod) {
-				const overrideLearnsets = BattleTeambuilderTable[this.mod].overrideLearnsets;
-				if (overrideLearnsets[learnsetid]) {
-					if (!learnset) learnset = overrideLearnsets[learnsetid]; //Didn't have learnset and mod gave it one
-					learnset = JSON.parse(JSON.stringify(learnset));
-					for (const learnedMove in overrideLearnsets[learnsetid]) learnset[learnedMove] = overrideLearnsets[learnsetid][learnedMove];
+				if (this.mod != 'ygo') {
+						const overrideLearnsets = BattleTeambuilderTable[this.mod].overrideLearnsets;
+					if (overrideLearnsets[learnsetid]) {
+						if (!learnset) learnset = overrideLearnsets[learnsetid]; //Didn't have learnset and mod gave it one
+						learnset = JSON.parse(JSON.stringify(learnset));
+						for (const learnedMove in overrideLearnsets[learnsetid]) learnset[learnedMove] = overrideLearnsets[learnsetid][learnedMove];
+					}
+				}
+				else {
+					const overridePackDetails = BattleTeambuilderTable[this.mod].overridePackDetails;
+					if (overridePackDetails[learnsetid]) {
+						if (!learnset) learnset = overridePackDetails[learnsetid]; //Didn't have learnset and mod gave it one
+						learnset = JSON.parse(JSON.stringify(learnset));
+						for (const learnedMove in overridePackDetails[learnsetid]) learnset[learnedMove] = overridePackDetails[learnsetid][learnedMove];
+					}
 				}
 			}
 			try {
@@ -1654,7 +1672,8 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 	sortRow: SearchRow = ['sortmove', ''];
 	getTable() {
 		if (!this.mod) return BattleMovedex;
-		else return {...BattleTeambuilderTable[this.mod].overrideMoveInfo, ...BattleMovedex};
+		else if (this.mod != 'ygo') return {...BattleTeambuilderTable[this.mod].overrideMoveInfo, ...BattleMovedex};
+		else return BattleTeambuilderTable[this.mod].overridePackDetails;
 	}
 	getDefaultResults(): SearchRow[] {
 		let results: SearchRow[] = [];
@@ -1952,6 +1971,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				}
 
 		let learnsetid = this.firstLearnsetid(species.id);
+		let packDetailsID = this.firstPackDetailsid(species.id);
 		let moves: string[] = [];
 		let sketchMoves: string[] = [];
 		let sketch = false;
@@ -1962,14 +1982,25 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType?.startsWith('ssdlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('predlc')) lsetTable = lsetTable['gen9predlc'];
 		if (this.formatType?.startsWith('svdlc1')) lsetTable = lsetTable['gen9dlc1'];
-		while (learnsetid) {
+		while (learnsetid || packDetailsID) {
 			let learnset = lsetTable.learnsets[learnsetid];
+			let packDetails = lsetTable.packDetails[packDetailsID];
 			if (this.mod) {
-				const overrideLearnsets = BattleTeambuilderTable[this.mod].overrideLearnsets;
-				if (overrideLearnsets[learnsetid]) {
-					if(!learnset) learnset = overrideLearnsets[learnsetid]; //Didn't have learnset and mod gave it one
-					learnset = JSON.parse(JSON.stringify(learnset));
-					for (const moveid in overrideLearnsets[learnsetid]) learnset[moveid] = overrideLearnsets[learnsetid][moveid];
+				if (this.mod != 'ygo') {
+					const overrideLearnsets = BattleTeambuilderTable[this.mod].overrideLearnsets;
+					if (overrideLearnsets[learnsetid]) {
+						if(!learnset) learnset = overrideLearnsets[learnsetid]; //Didn't have learnset and mod gave it one
+						learnset = JSON.parse(JSON.stringify(learnset));
+						for (const moveid in overrideLearnsets[learnsetid]) learnset[moveid] = overrideLearnsets[learnsetid][moveid];
+					}
+				}
+				else {
+					const overridePackDetails = BattleTeambuilderTable[this.mod].overridePackDetails;
+					if (overridePackDetails[packDetailsID]) {
+						if(!packDetails) packDetails = overridePackDetails[packDetailsID]; //Didn't have learnset and mod gave it one
+						packDetails = JSON.parse(JSON.stringify(packDetails));
+						for (const packid in overridePackDetails[packDetailsID]) packDetails[packid] = overridePackDetails[packDetailsID][packid];
+					}
 				}
 			}
 			if (learnset) {
@@ -2021,7 +2052,18 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					}
 				}
 			}
+			if (packDetails) {
+				if (!Object.keys(packDetails).length) { //Doesn't have learnset but one is loaded; some other mod gave it one
+					packDetailsID = toID(this.dex.species.get(packDetailsID).name);
+					continue;
+				}
+				for (let packid in packDetails) {
+					if (moves.includes(packid)) continue;
+					moves.push(packid);
+				}
+			}
 			learnsetid = this.nextLearnsetid(learnsetid, species.id);
+			packDetailsID = this.nextPackDetailsID(packDetailsID, species.id);
 		}
 		if (sketch || isHackmons) {
 			if (isHackmons) moves = [];
@@ -2097,18 +2139,26 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 
 		let usableMoves: SearchRow[] = [];
 		let uselessMoves: SearchRow[] = [];
-		for (const id of moves) {
-			let isUsable = this.moveIsNotUseless(id as ID, species, moves, this.set);
-			if (hasOwnUsefulCheck) {
-				const modIsUsable = window.ModConfig[this.mod].moveIsNotUseless.apply(window.ModConfig[this.mod], [id as ID, species, moves, this.set, this.dex]);
-				if (typeof modIsUsable === 'boolean' && modIsUsable !== isUsable) isUsable = modIsUsable;
+		if (this.mod != 'ygo') {
+			for (const id of moves) {
+				let isUsable = this.moveIsNotUseless(id as ID, species, moves, this.set);
+				if (hasOwnUsefulCheck) {
+					const modIsUsable = window.ModConfig[this.mod].moveIsNotUseless.apply(window.ModConfig[this.mod], [id as ID, species, moves, this.set, this.dex]);
+					if (typeof modIsUsable === 'boolean' && modIsUsable !== isUsable) isUsable = modIsUsable;
+				}
+				if (isUsable) {
+					if (!usableMoves.length) usableMoves.push(['header', "Moves"]);
+					usableMoves.push(['move', id as ID]);
+				} else {
+					if (!uselessMoves.length) uselessMoves.push(['header', "Usually useless moves"]);
+					uselessMoves.push(['move', id as ID]);
+				}
 			}
-			if (isUsable) {
+		}
+		else {
+			for (const id of moves) {
 				if (!usableMoves.length) usableMoves.push(['header', "Moves"]);
 				usableMoves.push(['move', id as ID]);
-			} else {
-				if (!uselessMoves.length) uselessMoves.push(['header', "Usually useless moves"]);
-				uselessMoves.push(['move', id as ID]);
 			}
 		}
 		if (sketchMoves.length) {
