@@ -776,6 +776,7 @@ export class BattleLog {
 			marquee: 0,
 			blink: 0,
 			psicon: html4.eflags['OPTIONAL_ENDTAG'] | html4.eflags['EMPTY'],
+			ygoprodeck: html4.eflags['OPTIONAL_ENDTAG'] | html4.eflags['EMPTY'],
 			username: 0,
 			spotify: 0,
 			youtube: 0,
@@ -799,6 +800,7 @@ export class BattleLog {
 			'marquee::truespeed': 0,
 			'marquee::vspace': 0,
 			'marquee::width': 0,
+			'ygoprodeck::card': 0,
 			'psicon::pokemon': 0,
 			'psicon::item': 0,
 			'psicon::type': 0,
@@ -988,6 +990,26 @@ export class BattleLog {
 					} else if (iconType === 'category') {
 						tagName = Dex.getCategoryIcon(iconValue).slice(1, -3);
 					}
+				}
+			} else if (tagName === 'ygoprodeck') {
+				// <psicon> is a custom element which supports a set of mutually incompatible attributes:
+				// <psicon pokemon> and <psicon item>
+				let iconType = null;
+				let iconValue = null;
+				for (let i = 0; i < attribs.length - 1; i += 2) {
+					if (attribs[i] === 'card') {
+						[iconType, iconValue] = attribs.slice(i, i + 2);
+						break;
+					}
+				}
+				console.log(iconType, iconValue);
+				tagName = 'span';
+
+				if (iconType) {
+					const className = getAttrib('class');
+					const style = getAttrib('style');
+					setAttrib('class', 'picon' + (className ? ' ' + className : ''));
+					setAttrib('style', Dex.getPokemonIcon(iconValue, undefined, 'ygo') + (style ? '; ' + style : ''));
 				}
 			}
 
