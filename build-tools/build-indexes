@@ -84,9 +84,8 @@ process.stdout.write("Building `data/pokedex.js`... ");
 buildPokedex();
 console.log("DONE");
 
-process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets,packs.js`...");
+process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.js`...");
 buildMoves();
-buildPacks();
 buildItems();
 buildAbilities();
 buildTypechart();
@@ -1695,17 +1694,6 @@ function buildMoves() {
 	const buf = 'exports.BattleMovedex = ' + es3stringify(Moves) + ';';
 	fs.writeFileSync('play.pokemonshowdown.com/data/moves.js', buf);
 	fs.writeFileSync('play.pokemonshowdown.com/data/moves.json', JSON.stringify(Moves));
-}
-
-/*********************************************************
- * Build packs.js
- *********************************************************/
-
-function buildPacks() {
-	const Packs = requireNoCache('../caches/DH2/dist/data/packs.js').Moves;
-	const buf = 'exports.Packdex = ' + es3stringify2(Packs) + ';';
-	fs.writeFileSync('play.pokemonshowdown.com/data/packs.js', buf);
-	fs.writeFileSync('play.pokemonshowdown.com/data/packs.json', JSON.stringify(Packs));
 }
 
 /*********************************************************
