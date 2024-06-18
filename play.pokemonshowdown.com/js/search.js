@@ -578,7 +578,7 @@
 		if (matchLength) {
 			name = name.substr(0, matchStart) + '<b>' + name.substr(matchStart, matchLength) + '</b>' + name.substr(matchStart + matchLength);
 		}
-		buf += '<span class="col namecol">' + name + '</span> ';
+		buf += '<span class="col namecol2">' + name + '</span> ';
 
 		// error
 		if (errorMessage) {
