@@ -481,7 +481,6 @@
 					// teams and boxes are <div>s rather than <button>s because Firefox doesn't
 					// support dragging and dropping buttons.
 					buf += '<li><div name="edit" data-value="' + i + '" class="team';
-					console.log(team.capacity);
 					if (team.capacity === 24 && !team.format.includes('ygo')) buf += ' pc-box';
 					else if (team.capacity > 15 && team.format.includes('ygo')) buf += ' pc-box';
 					buf += '" draggable="true">' + formatText + '<strong>' + BattleLog.escapeHTML(team.name) + '</strong><br /><small>';
