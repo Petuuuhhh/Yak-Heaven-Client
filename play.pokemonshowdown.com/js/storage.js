@@ -728,7 +728,8 @@ Storage.unpackAllTeams = function (buffer) {
 			if (format && format.slice(0, 3) !== 'gen') format = 'gen6' + format;
 			if (format && format.endsWith('-box')) {
 				format = format.slice(0, -4);
-				capacity = 24;
+				if (window.room.curTeam.mod != 'ygo') capacity = 24;
+				else capacity = 60;
 			}
 			return {
 				name: oldTeam.name || '',
@@ -764,7 +765,7 @@ Storage.unpackLine = function (line) {
 		format: format,
 		gen: parseInt(format[3], 10) || 6,
 		team: line.slice(pipeIndex + 1),
-		capacity: isBox ? 24 : 6,
+		capacity: isBox ? 60 : 6,
 		folder: line.slice(bracketIndex + 1, slashIndex > 0 ? slashIndex : bracketIndex + 1),
 		iconCache: ''
 	};
@@ -774,7 +775,7 @@ Storage.packAllTeams = function (teams) {
 	return teams.map(function (team) {
 		return (
 			(team.teamid ? '' + team.teamid + '[' : '') +
-			(team.format ? '' + team.format + (team.capacity === 24 ? '-box]' : ']') : '') +
+			(team.format ? '' + team.format + (team.capacity === 60 ? '-box]' : ']') : '') +
 			(team.folder ? '' + team.folder + '/' : '') + team.name + '|' +
 			Storage.getPackedTeam(team)
 		);
@@ -1245,7 +1246,8 @@ Storage.importTeam = function (buffer, teams) {
 				if (format && format.slice(0, 3) !== 'gen') format = 'gen6' + format;
 				if (format && format.endsWith('-box')) {
 					format = format.slice(0, -4);
-					capacity = 24;
+					if (window.room.curTeam.mod != 'ygo') capacity = 24;
+					else capacity = 60;
 				}
 				line = $.trim(line.substr(bracketIndex + 1));
 			}
@@ -1407,7 +1409,8 @@ Storage.exportAllTeams = function () {
 	var buf = '';
 	for (var i = 0, len = Storage.teams.length; i < len; i++) {
 		var team = Storage.teams[i];
-		buf += '=== ' + (team.format ? '[' + team.format + (team.capacity === 24 ? '-box] ' : '] ') : '') + (team.folder ? '' + team.folder + '/' : '') + team.name + ' ===\n\n';
+		if (window.room.curTeam.mod != 'ygo') buf += '=== ' + (team.format ? '[' + team.format + (team.capacity === 24 ? '-box] ' : '] ') : '') + (team.folder ? '' + team.folder + '/' : '') + team.name + ' ===\n\n';
+		else buf += '=== ' + (team.format ? '[' + team.format + (team.capacity > 15 ? '-box] ' : '] ') : '') + (team.folder ? '' + team.folder + '/' : '') + team.name + ' ===\n\n';
 		buf += Storage.exportTeam(team.team, team.gen);
 		buf += '\n';
 	}
@@ -1418,7 +1421,8 @@ Storage.exportFolder = function (folder) {
 	for (var i = 0, len = Storage.teams.length; i < len; i++) {
 		var team = Storage.teams[i];
 		if (team.folder + "/" === folder || team.format === folder) {
-			buf += '=== ' + (team.format ? '[' + team.format + (team.capacity === 24 ? '-box] ' : '] ') : '') + (team.folder ? '' + team.folder + '/' : '') + team.name + ' ===\n\n';
+			if (window.room.curTeam.mod != 'ygo') buf += '=== ' + (team.format ? '[' + team.format + (team.capacity === 24 ? '-box] ' : '] ') : '') + (team.folder ? '' + team.folder + '/' : '') + team.name + ' ===\n\n';
+			else buf += '=== ' + (team.format ? '[' + team.format + (team.capacity > 15 ? '-box] ' : '] ') : '') + (team.folder ? '' + team.folder + '/' : '') + team.name + ' ===\n\n';
 			buf += Storage.exportTeam(team.team, team.gen);
 			buf += '\n';
 		}
@@ -1714,7 +1718,8 @@ Storage.nwLoadTeamFile = function (filename, localApp) {
 		if (format && /^gen6gen[0-9]/.test(format)) format = format.slice(4);
 		if (format && format.endsWith('-box')) {
 			format = format.slice(0, -4);
-			capacity = 24;
+			if (window.room.curTeam.mod != 'ygo') capacity = 24;
+			else capacity = 60;
 		}
 		line = $.trim(line.slice(bracketIndex + 1));
 	}
@@ -1799,7 +1804,10 @@ Storage.nwDeleteTeamFile = function (filename, callback) {
 Storage.nwSaveTeam = function (team) {
 	if (!team) return;
 	var filename = team.name + '.txt';
-	if (team.format) filename = '[' + team.format + (team.capacity === 24 ? '-box] ' : '] ') + filename;
+	if (team.format) {
+		if (window.room.curTeam.mod != 'ygo') filename = '[' + team.format + (team.capacity === 24 ? '-box] ' : '] ') + filename;
+		else filename = '[' + team.format + (team.capacity > 15 ? '-box] ' : '] ') + filename;
+	}
 	filename = filename.trim().replace(/[\\\/]+/g, '');
 	if (team.folder) filename = '' + team.folder.replace(/[\\\/]+/g, '') + '/' + filename;
 
@@ -1847,7 +1855,10 @@ Storage.nwDoSaveAllTeams = function () {
 	for (var i = 0; i < this.teams.length; i++) {
 		var team = this.teams[i];
 		var filename = team.name + '.txt';
-		if (team.format) filename = '[' + team.format + (team.capacity === 24 ? '-box] ' : '] ') + filename;
+		if (team.format) {
+			if (window.room.curTeam.mod != 'ygo') filename = '[' + team.format + (team.capacity === 24 ? '-box] ' : '] ') + filename;
+			else filename = '[' + team.format + (team.capacity > 15 ? '-box] ' : '] ') + filename;
+		}
 		filename = $.trim(filename).replace(/[\\\/]+/g, '');
 
 		team.filename = filename;

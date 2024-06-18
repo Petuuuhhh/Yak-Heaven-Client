@@ -481,7 +481,9 @@
 					// teams and boxes are <div>s rather than <button>s because Firefox doesn't
 					// support dragging and dropping buttons.
 					buf += '<li><div name="edit" data-value="' + i + '" class="team';
-					if (team.capacity === 24) buf += ' pc-box';
+					console.log(team.capacity);
+					if (team.capacity === 24 && !team.format.includes('ygo')) buf += ' pc-box';
+					else if (team.capacity > 15 && team.format.includes('ygo')) buf += ' pc-box';
 					buf += '" draggable="true">' + formatText + '<strong>' + BattleLog.escapeHTML(team.name) + '</strong><br /><small>';
 					buf += Storage.getTeamIcons(team);
 					buf += '</small></div><button name="edit" value="' + i + '"><i class="fa fa-pencil" aria-label="Edit" title="Edit (you can also just click on the team)"></i></button><button name="duplicate" value="' + i + '" title="Duplicate" aria-label="Duplicate"><i class="fa fa-clone"></i></button><button name="delete" value="' + i + '"><i class="fa fa-trash"></i> Delete</button></li>';
@@ -859,7 +861,7 @@
 					name: (isBox ? 'Box ' : 'Untitled ') + (teams.length + 1),
 					format: format,
 					team: '',
-					capacity: isBox ? 24 : 6,
+					capacity: isBox ? 60 : 6,
 					folder: folder,
 					iconCache: ''
 				};
@@ -1165,7 +1167,7 @@
 						if (format && format.slice(0, 3) !== 'gen') format = 'gen6' + format;
 						if (format && format.endsWith('-box')) {
 							format = format.slice(0, -4);
-							capacity = 24;
+							capacity = 60;
 						}
 						name = $.trim(name.substr(bracketIndex + 1));
 					}
