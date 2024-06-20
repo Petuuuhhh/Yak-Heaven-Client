@@ -860,7 +860,7 @@
 					name: (isBox ? 'Box ' : 'Untitled ') + (teams.length + 1),
 					format: format,
 					team: '',
-					capacity: isBox ? 60 : 6,
+					capacity: isBox ? 60 : 15,
 					folder: folder,
 					iconCache: ''
 				};
@@ -1160,7 +1160,7 @@
 					}
 					var format = '';
 					var bracketIndex = name.indexOf(']');
-					var capacity = 6;
+					var capacity = 15;
 					if (bracketIndex >= 0) {
 						format = name.substr(1, bracketIndex - 1);
 						if (format && format.slice(0, 3) !== 'gen') format = 'gen6' + format;
